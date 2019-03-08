@@ -14,6 +14,7 @@ import {
 } from "sancho";
 import { Link } from "react-router-dom";
 import { Browser } from "./Browser";
+import Helmet from "react-helmet";
 
 export interface BrandingProps {}
 
@@ -23,6 +24,7 @@ export const Branding: React.FunctionComponent<BrandingProps> = props => {
 
   return (
     <React.Fragment>
+      <Helmet title="Fiddleware Subtitles - Create subtitles for your videos" />
       <AnonNav />
       <div
         css={{
