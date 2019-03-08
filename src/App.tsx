@@ -38,7 +38,7 @@ export const App: React.FunctionComponent<AppProps> = props => {
       >
         <BrowserRouter>
           <Switch>
-            <Route path="/" component={Branding} />
+            <Route exact path="/" component={Branding} />
             <Route path="/login" component={Login} />
             <PrivateRoute path="/{id}" component={Editor} />
           </Switch>
