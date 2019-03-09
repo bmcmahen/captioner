@@ -19,11 +19,31 @@ export const loginWithGoogle = async () => {
   }
 };
 
+const github = new firebase.auth.GithubAuthProvider();
+
+export const loginWithGithub = async () => {
+  try {
+    const result = await firebase.auth().signInWithPopup(github);
+  } catch (err) {
+    console.error(err);
+    throw err;
+  }
+};
+
 export const loginWithEmail = async (email: string, password: string) => {
   try {
     const results = await firebase
       .auth()
       .signInWithEmailAndPassword(email, password);
+  } catch (err) {
+    console.error(err);
+    throw err;
+  }
+};
+
+export const createUserWithEmail = async (email: string, password: string) => {
+  try {
+    await firebase.auth().createUserWithEmailAndPassword(email, password);
   } catch (err) {
     console.error(err);
     throw err;

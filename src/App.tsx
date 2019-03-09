@@ -11,6 +11,7 @@ import { Login } from "./Login";
 import { Editor } from "./Editor";
 import { Branding } from "./Branding";
 import { useSession } from "./auth";
+import { NewProject } from "./NewProject";
 
 export interface AppProps {}
 
@@ -40,6 +41,8 @@ export const App: React.FunctionComponent<AppProps> = props => {
           <Switch>
             <Route exact path="/" component={Branding} />
             <Route path="/login" component={Login} />
+            {/** the next two should require login (anon?) */}
+            <Route path="/new" component={NewProject} />
             <Route path="/:id" component={Editor} />
             <Route component={() => <div>Not found</div>} />
           </Switch>

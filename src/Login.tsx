@@ -1,7 +1,7 @@
 /** @jsx jsx */
 import { jsx, Global } from "@emotion/core";
 import * as React from "react";
-import { Link as RouterLink } from "react-router-dom";
+import { Link as RouterLink, Redirect } from "react-router-dom";
 import {
   theme,
   Layer,
@@ -16,13 +16,65 @@ import {
   Navbar,
   Toolbar,
   Breadcrumb,
-  BreadcrumbItem
+  BreadcrumbItem,
+  LayerLoading
 } from "sancho";
-import { AnonNav } from "./Branding";
+import { loginWithGoogle, loginWithGithub, loginWithEmail } from "./auth";
+import useReactRouter from "use-react-router";
+import queryString from "query-string";
 
 export interface LoginProps {}
 
 export const Login: React.FunctionComponent<LoginProps> = props => {
+  const { location } = useReactRouter();
+  const qs = queryString.parse(location.search);
+  const [isRegistering, setIsRegistering] = React.useState(
+    typeof qs.register === "string"
+  );
+
+  const [loading, setLoading] = React.useState(false);
+  const [redirectToReferrer, setRedirectToReferrer] = React.useState(false);
+
+  const { from } = location.state || { from: { pathname: "/new" } };
+
+  // logging in errors
+  const [error, setError] = React.useState(false);
+  const [form, setForm] = React.useState({ email: "", password: "" });
+
+  function login(fn: () => Promise<void>) {
+    return async () => {
+      try {
+        setError(false);
+        setLoading(true);
+        await fn();
+        setRedirectToReferrer(true);
+      } catch (err) {
+        setLoading(false);
+        setError(true);
+      }
+    };
+  }
+
+  async function loginEmail(e: React.FormEvent) {
+    e.preventDefault();
+
+    const { email, password } = form;
+
+    try {
+      setError(false);
+      setLoading(true);
+      await loginWithEmail(email, password);
+      setRedirectToReferrer(true);
+    } catch (err) {
+      setLoading(false);
+      setError(true);
+    }
+  }
+
+  if (redirectToReferrer) {
+    return <Redirect to={from} />;
+  }
+
   return (
     <React.Fragment>
       <Global
@@ -40,7 +92,9 @@ export const Login: React.FunctionComponent<LoginProps> = props => {
             <BreadcrumbItem>
               <Link href="/">Fiddleware Subtitles</Link>
             </BreadcrumbItem>
-            <BreadcrumbItem>Sign in</BreadcrumbItem>
+            <BreadcrumbItem>
+              {isRegistering ? "Register" : "Sign in"}
+            </BreadcrumbItem>
           </Breadcrumb>
         </Toolbar>
       </Navbar>
@@ -71,15 +125,41 @@ export const Login: React.FunctionComponent<LoginProps> = props => {
             <Icon icon="log-in" size={40} />
           </div>
           <Text css={{ textAlign: "center" }} variant="h3">
-            Login to Fiddleware
+            {isRegistering ? "Sign up to Fiddleware" : "Login to Fiddleware"}
           </Text>
           <Text
             css={{ textAlign: "center", display: "block" }}
             variant="body"
             muted
           >
-            You can log in to Fiddleware using one of the below methods. Don't
-            have an account? <Link href="#">Register here.</Link>
+            You can log in to Fiddleware using one of the below methods.{" "}
+            {isRegistering ? (
+              <span>
+                Already have an account?{" "}
+                <Link
+                  onClick={e => {
+                    e.preventDefault();
+                    setIsRegistering(false);
+                  }}
+                  href="#"
+                >
+                  Login in.
+                </Link>
+              </span>
+            ) : (
+              <span>
+                Don't have an account?{" "}
+                <Link
+                  onClick={e => {
+                    e.preventDefault();
+                    setIsRegistering(true);
+                  }}
+                  href="#"
+                >
+                  Register here.
+                </Link>
+              </span>
+            )}
           </Text>
           <Divider css={{ marginTop: theme.spaces.lg }} />
           <div
@@ -88,15 +168,20 @@ export const Login: React.FunctionComponent<LoginProps> = props => {
             }}
           >
             <div css={{ display: "flex" }}>
-              <Button css={{ flex: 1 }}>Sign in with Google</Button>
+              <Button onClick={login(loginWithGoogle)} css={{ flex: 1 }}>
+                Sign {isRegistering ? "up" : "in"} with Google
+              </Button>
               <div css={{ display: "inline-block", width: theme.spaces.sm }} />
-              <Button css={{ flex: 1 }}>Sign in with Github</Button>
+              <Button onClick={login(loginWithGithub)} css={{ flex: 1 }}>
+                Sign {isRegistering ? "up" : "in"} with Github
+              </Button>
             </div>
             <Divider />
             <div>
-              <form>
+              <form onSubmit={loginEmail}>
                 <Text muted variant="subtitle">
-                  Sign in using an email and password:
+                  Sign {isRegistering ? "up" : "in"} using an email and
+                  password:
                 </Text>
                 <InputGroup hideLabel label="Email">
                   <Input inputSize="md" type="email" placeholder="Email" />
@@ -115,12 +200,13 @@ export const Login: React.FunctionComponent<LoginProps> = props => {
                     size="md"
                     intent="primary"
                   >
-                    Sign in
+                    Sign {isRegistering ? "up" : "in"}
                   </Button>
                 </div>
               </form>
             </div>
           </div>
+          <LayerLoading loading={loading} />
         </Layer>
       </div>
     </React.Fragment>

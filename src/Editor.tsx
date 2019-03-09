@@ -1,31 +1,44 @@
 /** @jsx jsx */
 import { jsx, css } from "@emotion/core";
 import * as React from "react";
+import { Video } from "./Video";
+import { Captions } from "./Captions";
+import { theme, useCollapse } from "sancho";
+import { useDocument } from "react-firebase-hooks/firestore";
+import firebase from "firebase/app";
+import debug from "debug";
 
-export interface EditorProps {}
+const log = debug("app:Editor");
 
-export const Editor: React.FunctionComponent<EditorProps> = props => {
+export interface EditorProps {
+  id: string;
+}
+
+export const Editor: React.FunctionComponent<EditorProps> = ({ id }) => {
+  const state = useDocument(firebase.firestore().doc(`captions/${id}`));
+
   return (
     <Layout>
       <div
         css={{
-          gridArea: "video",
-          background: "blue"
+          gridArea: "video"
         }}
-      />
+      >
+        <Video />
+      </div>
       <div
         css={{
           gridArea: "editor",
-          background: "red"
+          background: "white"
         }}
       >
-        Editor
+        <Captions captions={[]} />
       </div>
 
       <div
         css={{
           gridArea: "timeline",
-          background: "yellow"
+          background: theme.colors.background.tint2
         }}
       >
         Timeline
@@ -41,6 +54,7 @@ function Layout({ children }: { children: React.ReactNode }) {
         height: 100vh;
         width: 100vw;
         display: grid;
+        grid-template-columns: 25% 25% 25% 25%;
         grid-template-rows: auto 150px;
         grid-template-areas:
           "video video editor editor"
