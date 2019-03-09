@@ -1,6 +1,7 @@
 /** @jsx jsx */
 import { jsx, Global } from "@emotion/core";
 import * as React from "react";
+import { Link as RouterLink } from "react-router-dom";
 import {
   theme,
   Layer,
@@ -11,7 +12,11 @@ import {
   InputGroup,
   Icon,
   Link,
-  responsiveBodyPadding
+  responsiveBodyPadding,
+  Navbar,
+  Toolbar,
+  Breadcrumb,
+  BreadcrumbItem
 } from "sancho";
 import { AnonNav } from "./Branding";
 
@@ -29,7 +34,16 @@ export const Login: React.FunctionComponent<LoginProps> = props => {
           }
         }}
       />
-      <AnonNav />
+      <Navbar css={{ background: "transparent", boxShadow: "none" }}>
+        <Toolbar>
+          <Breadcrumb>
+            <BreadcrumbItem>
+              <Link href="/">Fiddleware Subtitles</Link>
+            </BreadcrumbItem>
+            <BreadcrumbItem>Sign in</BreadcrumbItem>
+          </Breadcrumb>
+        </Toolbar>
+      </Navbar>
       <div
         css={[
           {
