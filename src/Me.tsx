@@ -11,7 +11,10 @@ import {
   Navbar,
   theme,
   Spinner,
-  Alert
+  Alert,
+  ListItem,
+  Icon,
+  List
 } from "sancho";
 import { useCollection } from "react-firebase-hooks/firestore";
 import firebase from "firebase/app";
@@ -32,7 +35,12 @@ export const Me: React.FunctionComponent<MeProps> = props => {
     <LoginLayout title={user ? user.displayName || "Profile" : "Profile"}>
       <Layer
         elevation="sm"
-        css={{ overflow: "hidden", maxWidth: "550px", width: "100%" }}
+        css={{
+          marginTop: "4.5rem",
+          overflow: "hidden",
+          maxWidth: "550px",
+          width: "100%"
+        }}
       >
         <Navbar css={{ boxShadow: theme.shadows.xs }} position="static">
           <Toolbar>
@@ -44,7 +52,17 @@ export const Me: React.FunctionComponent<MeProps> = props => {
           </Toolbar>
         </Navbar>
         <div>
-          {loading && <Spinner />}
+          {loading && (
+            <div
+              css={{
+                margin: theme.spaces.md,
+                display: "flex",
+                justifyContent: "center"
+              }}
+            >
+              <Spinner />
+            </div>
+          )}
 
           {error && (
             <Alert
@@ -65,10 +83,18 @@ export const Me: React.FunctionComponent<MeProps> = props => {
               You have yet to create any projects.
             </Text>
           )}
-          {value &&
-            value.docs.map(doc => {
-              <div key={doc.id}>{doc.get("title")}</div>;
-            })}
+          <List>
+            {value &&
+              value.docs.map(doc => {
+                return (
+                  <ListItem
+                    key={doc.id}
+                    primary={doc.get("title")}
+                    iconAfter={<Icon icon="chevron-right" />}
+                  />
+                );
+              })}
+          </List>
         </div>
       </Layer>
     </LoginLayout>

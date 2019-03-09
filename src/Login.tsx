@@ -174,10 +174,26 @@ export const Login: React.FunctionComponent<LoginProps> = props => {
                 password:
               </Text>
               <InputGroup hideLabel label="Email">
-                <Input inputSize="md" type="email" placeholder="Email" />
+                <Input
+                  onChange={e => {
+                    setForm({ ...form, email: e.currentTarget.value });
+                  }}
+                  value={form.email}
+                  inputSize="md"
+                  type="email"
+                  placeholder="Email"
+                />
               </InputGroup>
               <InputGroup hideLabel label="Password">
-                <Input inputSize="md" type="password" placeholder="Password" />
+                <Input
+                  onChange={e => {
+                    setForm({ ...form, password: e.currentTarget.value });
+                  }}
+                  value={form.password}
+                  inputSize="md"
+                  type="password"
+                  placeholder="Password"
+                />
               </InputGroup>
               <div css={{ display: "flex", justifyContent: "flex-end" }}>
                 <Button

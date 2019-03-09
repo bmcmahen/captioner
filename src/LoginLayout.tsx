@@ -1,6 +1,7 @@
 /** @jsx jsx */
 import { jsx, Global } from "@emotion/core";
 import * as React from "react";
+import { Link as RouterLink } from "react-router-dom";
 import {
   theme,
   responsiveBodyPadding,
@@ -8,8 +9,14 @@ import {
   Toolbar,
   Breadcrumb,
   BreadcrumbItem,
-  Link
+  Link,
+  Avatar,
+  IconButton,
+  Popover,
+  MenuList,
+  MenuItem
 } from "sancho";
+import { useSession, signOut } from "./auth";
 
 export interface LoginLayoutProps {
   children?: React.ReactNode;
@@ -20,6 +27,7 @@ export const LoginLayout: React.FunctionComponent<LoginLayoutProps> = ({
   children,
   title
 }) => {
+  const user = useSession();
   return (
     <React.Fragment>
       <Global
@@ -32,13 +40,38 @@ export const LoginLayout: React.FunctionComponent<LoginLayoutProps> = ({
         }}
       />
       <Navbar css={{ background: "transparent", boxShadow: "none" }}>
-        <Toolbar css={{ justifyContent: "center" }}>
+        <Toolbar css={{ justifyContent: "space-between" }}>
           <Breadcrumb css={{ background: "white" }}>
             <BreadcrumbItem>
-              <Link href="/">Fiddleware Subtitles</Link>
+              <Link component={RouterLink} to="/">
+                Fiddleware Subtitles
+              </Link>
             </BreadcrumbItem>
             <BreadcrumbItem>{title}</BreadcrumbItem>
           </Breadcrumb>
+          {user && (
+            <Popover
+              content={
+                <MenuList>
+                  <MenuItem onSelect={signOut}>Sign out</MenuItem>
+                  <MenuItem />
+                </MenuList>
+              }
+            >
+              <IconButton
+                variant="ghost"
+                size="sm"
+                icon={
+                  <Avatar
+                    size="sm"
+                    src={user.photoURL || undefined}
+                    name={user.displayName || user!.email || "?"}
+                  />
+                }
+                label={user.displayName || user!.email || "?"}
+              />
+            </Popover>
+          )}
         </Toolbar>
       </Navbar>
       <div

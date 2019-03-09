@@ -26,7 +26,7 @@
     "react-router": "^4.4.0-beta.7",
     "react-router-dom": "^4.4.0-beta.7",
     "react-scripts": "2.1.8",
-    "sancho": "^1.0.0-beta.0",
+    "sancho": "^1.0.0-beta.2",
     "typescript": "3.3.3333",
     "use-react-router": "^1.0.3"
   },

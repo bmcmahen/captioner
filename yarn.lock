@@ -9274,10 +9274,10 @@ safe-regex@^1.1.0:
   resolved "https://registry.yarnpkg.com/safer-buffer/-/safer-buffer-2.1.2.tgz#44fa161b0187b9549dd84bb91802f9bd8385cd6a"
   integrity sha512-YZo3K82SD7Riyi0E1EQPojLz7kpepnSQI9IyPbHHg1XXXevb5dJI7tpyN2ADxGcQbHG7vcyRHk0cbwqcQriUtg==
 
-sancho@^1.0.0-beta.0:
-  version "1.0.0-beta.0"
-  resolved "https://registry.yarnpkg.com/sancho/-/sancho-1.0.0-beta.0.tgz#156d207356643ed043b336b9cbb5d310fbc46d3b"
-  integrity sha512-sTVNUS3l7520cU1esL9owYqMOEfV4yYOO/iiyYcbe20gHvqx0tCwu2wHDHgxAQ6w4BcH0iKlVwlbestLZEeFog==
+sancho@^1.0.0-beta.2:
+  version "1.0.0-beta.2"
+  resolved "https://registry.yarnpkg.com/sancho/-/sancho-1.0.0-beta.2.tgz#6b8b3669f9876c880a7f1f198dd31f957ecf5d58"
+  integrity sha512-PNzrKYR15otlLDHFS0yRv7mkVeVaKIKm7Zto9wBfgtDQFdfTjaaGLkrbMuBaGL+G8mXBsBDtZrcCiy/jW/wNGA==
   dependencies:
     "@blueprintjs/icons" "^3.6.0"
     "@emotion/core" "^10.0.7"
