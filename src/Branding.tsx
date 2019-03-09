@@ -10,11 +10,13 @@ import {
   Link as Anchor,
   Container,
   NegativeMarginsContainer,
-  Divider
+  Divider,
+  Icon
 } from "sancho";
 import { Link } from "react-router-dom";
 import { Browser } from "./Browser";
 import Helmet from "react-helmet";
+import { useSession } from "./auth";
 
 export interface BrandingProps {}
 
@@ -22,10 +24,12 @@ export const Branding: React.FunctionComponent<BrandingProps> = props => {
   const bg = theme.colors.palette.blue.light;
   const text = theme.colors.palette.blue.dark;
 
+  const user = useSession();
+
   return (
     <React.Fragment>
       <Helmet title="Fiddleware Subtitles - Create subtitles for your videos" />
-      <AnonNav />
+      <AnonNav user={user} />
       <div
         css={{
           backgroundAttachment: "fixed",
@@ -184,7 +188,7 @@ const Column = ({ title, content }: { title: string; content: string }) => {
   );
 };
 
-export const AnonNav = () => (
+export const AnonNav = ({ user }: { user?: firebase.User }) => (
   <Navbar
     css={{
       boxShadow: "none",
@@ -200,24 +204,37 @@ export const AnonNav = () => (
         </Text>
       </Link>
       <div css={{ flex: 1 }} />
-      <Button
-        component={Link}
-        to="/login?register=true"
-        variant="ghost"
-        intent="primary"
-        css={{
-          display: "none",
-          [theme.breakpoints.md]: {
-            display: "block"
-          },
-          marginRight: theme.spaces.md
-        }}
-      >
-        Register
-      </Button>
-      <Button intent="primary" component={Link} to="/login">
-        Login
-      </Button>
+      {user ? (
+        <Button variant="ghost" intent="primary" component={Link} to="/me">
+          My Dashboard{" "}
+          <Icon
+            color={theme.colors.palette.blue.base}
+            css={{ marginLeft: theme.spaces.md, color: "white" }}
+            icon="arrow-right"
+          />
+        </Button>
+      ) : (
+        <React.Fragment>
+          <Button
+            component={Link}
+            to="/login?register=true"
+            variant="ghost"
+            intent="primary"
+            css={{
+              display: "none",
+              [theme.breakpoints.md]: {
+                display: "block"
+              },
+              marginRight: theme.spaces.md
+            }}
+          >
+            Register
+          </Button>
+          <Button intent="primary" component={Link} to="/login">
+            Login
+          </Button>
+        </React.Fragment>
+      )}
     </Toolbar>
   </Navbar>
 );
