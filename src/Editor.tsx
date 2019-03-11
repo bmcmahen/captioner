@@ -4,7 +4,7 @@ import * as React from "react";
 import { Video } from "./Video";
 import { Captions } from "./Captions";
 import { theme, useCollapse, responsiveBodyPadding, Alert } from "sancho";
-import { useDocument } from "react-firebase-hooks/firestore";
+import { useDocument, useCollection } from "react-firebase-hooks/firestore";
 import firebase from "firebase/app";
 import debug from "debug";
 import { EditorNav } from "./EditorNav";
@@ -18,11 +18,22 @@ export interface EditorProps extends RouteChildrenProps<any> {}
 
 export const Editor: React.FunctionComponent<EditorProps> = ({ match }) => {
   const { id } = match && match.params;
+
+  // load the document containing meta about the project
   const { error, loading, value } = useDocument(
     firebase
       .firestore()
       .collection("captions")
       .doc(id)
+  );
+
+  // load the actual captions themselves
+  const captions = useCollection(
+    firebase
+      .firestore()
+      .collection("captions")
+      .doc(id)
+      .collection("entries")
   );
 
   // the current video url
@@ -32,6 +43,13 @@ export const Editor: React.FunctionComponent<EditorProps> = ({ match }) => {
 
   // the current playback time
   const [time, setTime] = React.useState(0);
+
+  // update our doucment title
+  React.useEffect(() => {
+    if (value && value.exists) {
+      document.title = value.get("title");
+    }
+  }, [value]);
 
   // set the video URL and save to firebase
   function setVideoURL(url: string, canSave: boolean, name: string) {
@@ -57,6 +75,9 @@ export const Editor: React.FunctionComponent<EditorProps> = ({ match }) => {
     }
   }
 
+  // we need to track this to determin which caption to focus,
+  // and where the scrubber should be located.
+  // We should ignore this if "scrubbing"
   function setCurrentTime(seconds: number) {
     setTime(seconds);
   }
@@ -88,7 +109,7 @@ export const Editor: React.FunctionComponent<EditorProps> = ({ match }) => {
 
   return (
     <Layout css={responsiveBodyPadding}>
-      <EditorNav />
+      <EditorNav title={value && value.get("title")} />
       <VideoContainer>
         <Video
           setVideoDuration={setVideoDuration}
@@ -99,13 +120,20 @@ export const Editor: React.FunctionComponent<EditorProps> = ({ match }) => {
         />
       </VideoContainer>
       <CaptionsContainer>
-        {value && <Captions onRequestSeek={seekTo} captions={[]} />}
+        {value && captions.value && (
+          <Captions
+            currentTime={time}
+            onRequestSeek={seekTo}
+            captions={captions.value}
+          />
+        )}
       </CaptionsContainer>
 
       <TimelineContainer>
-        {value && value.get("duration") && (
+        {value && value.get("duration") && captions.value && (
           <Timeline
-            captions={[]}
+            captions={captions.value}
+            currentTime={time}
             duration={value.get("duration")}
             onRequestSeek={seekTo}
           />

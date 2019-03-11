@@ -17,8 +17,9 @@ import * as React from "react";
  */
 
 export interface TimelineProps {
-  captions: Array<any>;
+  captions: firebase.firestore.QuerySnapshot;
   duration: number;
+  currentTime?: number;
   onRequestSeek: (seconds: number) => void;
 }
 

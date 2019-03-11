@@ -15,8 +15,9 @@ interface Caption {
 }
 
 export interface CaptionsProps {
-  captions: Caption[];
+  captions: firebase.firestore.QuerySnapshot;
   onRequestSeek: (seconds: number) => void;
+  currentTime?: number;
 }
 
 export const Captions: React.FunctionComponent<CaptionsProps> = ({
@@ -33,7 +34,7 @@ export const Captions: React.FunctionComponent<CaptionsProps> = ({
         WebkitOverflowScrolling: "touch"
       }}
     >
-      {captions.map((caption, i) => {
+      {captions.docs.map((caption, i) => {
         return (
           <Caption
             focus={i === focus}
@@ -71,7 +72,7 @@ interface TimeArgs {
 }
 
 interface CaptionProps {
-  caption: Caption;
+  caption: firebase.firestore.QueryDocumentSnapshot;
   focus: boolean;
   onRequestNext: () => void;
   updateToNextTimeAllotment: () => void;
@@ -95,7 +96,7 @@ const Caption = ({
   updateToNextTimeAllotment
 }: CaptionProps) => {
   const textarea = React.useRef<HTMLInputElement>(null);
-  const [value, setValue] = React.useState(caption.content);
+  const [value, setValue] = React.useState(caption.get("content"));
 
   // handle focus
   React.useEffect(() => {
@@ -150,8 +151,8 @@ const Caption = ({
         case 80:
           e.preventDefault();
           onRequestUpdateTime({
-            startTime: caption.startTime,
-            endTime: caption.endTime + 0.5
+            startTime: caption.get("startTime"),
+            endTime: caption.get("endTime") + 0.5
           });
           return;
 
@@ -159,8 +160,8 @@ const Caption = ({
         case 79:
           e.preventDefault();
           onRequestUpdateTime({
-            startTime: caption.startTime,
-            endTime: caption.endTime - 0.5
+            startTime: caption.get("startTime"),
+            endTime: caption.get("endTime") - 0.5
           });
           return;
 
@@ -168,8 +169,8 @@ const Caption = ({
         case 73:
           e.preventDefault();
           onRequestUpdateTime({
-            startTime: caption.startTime + 0.5,
-            endTime: caption.endTime
+            startTime: caption.get("startTime") + 0.5,
+            endTime: caption.get("endTime")
           });
           return;
 
@@ -177,8 +178,8 @@ const Caption = ({
         case 85:
           e.preventDefault();
           onRequestUpdateTime({
-            startTime: caption.startTime - 0.5,
-            endTime: caption.endTime
+            startTime: caption.get("startTime") - 0.5,
+            endTime: caption.get("endTime")
           });
           return;
       }
@@ -189,7 +190,7 @@ const Caption = ({
     <div css={{ display: "flex" }}>
       <label htmlFor={caption.id}>
         <Text variant="subtitle">
-          {caption.startTime} - {caption.endTime}
+          {caption.get("startTime")} - {caption.get("endTime")}
         </Text>
       </label>
       <TextareaAutosize
