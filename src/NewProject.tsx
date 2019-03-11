@@ -1,35 +1,26 @@
 /** @jsx jsx */
 import { jsx } from "@emotion/core";
 import * as React from "react";
-import { useSession } from "./auth";
-import firebase from "firebase/app";
 import { Redirect } from "react-router";
 import { Alert, Spinner, theme } from "sancho";
+import { useCreateProject } from "./firebase";
+import debug from "debug";
+
+const log = debug("app:NewProject");
 
 export interface NewProjectProps {}
 
 export const NewProject: React.FunctionComponent<NewProjectProps> = props => {
-  const user = useSession();
+  const { error, create } = useCreateProject();
   const [id, setId] = React.useState();
-  const [error, setError] = React.useState(false);
 
   React.useEffect(() => {
-    if (!user) {
-      console.error("No user is present");
-      setError(true); // this should never be the case
-      return;
-    }
-
-    firebase
-      .firestore()
-      .collection("captions")
-      .add(projectFactory(user.uid))
-      .then(value => {
-        setId(value.id);
+    create()
+      .then(doc => {
+        setId(doc.id);
       })
       .catch(err => {
-        console.error(err);
-        setError(true);
+        log("Error: %s", err);
       });
   }, []);
 

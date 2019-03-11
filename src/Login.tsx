@@ -20,7 +20,12 @@ import {
   LayerLoading,
   Alert
 } from "sancho";
-import { loginWithGoogle, loginWithGithub, loginWithEmail } from "./auth";
+import {
+  loginWithGoogle,
+  loginWithGithub,
+  loginWithEmail,
+  createUserWithEmail
+} from "./auth";
 import useReactRouter from "use-react-router";
 import queryString from "query-string";
 import { LoginLayout } from "./LoginLayout";
@@ -40,19 +45,19 @@ export const Login: React.FunctionComponent<LoginProps> = props => {
   const { from } = location.state || { from: { pathname: "/me" } };
 
   // logging in errors
-  const [error, setError] = React.useState(false);
+  const [error, setError] = React.useState("");
   const [form, setForm] = React.useState({ email: "", password: "" });
 
   function login(fn: () => Promise<void>) {
     return async () => {
       try {
-        setError(false);
+        setError("");
         setLoading(true);
         await fn();
         setRedirectToReferrer(true);
       } catch (err) {
         setLoading(false);
-        setError(true);
+        setError(err.message || "Please try again.");
       }
     };
   }
@@ -62,14 +67,16 @@ export const Login: React.FunctionComponent<LoginProps> = props => {
 
     const { email, password } = form;
 
+    const fn = isRegistering ? createUserWithEmail : loginWithEmail;
+
     try {
-      setError(false);
+      setError("");
       setLoading(true);
-      await loginWithEmail(email, password);
+      await fn(email, password);
       setRedirectToReferrer(true);
     } catch (err) {
       setLoading(false);
-      setError(true);
+      setError(err.message || "Please try again.");
     }
   }
 
@@ -82,7 +89,8 @@ export const Login: React.FunctionComponent<LoginProps> = props => {
       <Layer
         css={{
           marginTop: theme.spaces.xl,
-          maxWidth: "425px",
+          marginBottom: theme.spaces.lg,
+          maxWidth: "450px",
           background: theme.colors.background.tint1,
 
           overflow: "hidden"
@@ -104,7 +112,11 @@ export const Login: React.FunctionComponent<LoginProps> = props => {
           {isRegistering ? "Sign up to Fiddleware" : "Login to Fiddleware"}
         </Text>
         <Text
-          css={{ textAlign: "center", display: "block" }}
+          css={{
+            padding: `0 ${theme.spaces.md}`,
+            textAlign: "center",
+            display: "block"
+          }}
           variant="body"
           muted
         >
@@ -137,14 +149,6 @@ export const Login: React.FunctionComponent<LoginProps> = props => {
             </span>
           )}
         </Text>
-        {error && (
-          <Alert
-            css={{ marginTop: theme.spaces.md }}
-            intent="danger"
-            title="An error has occurred while logging in."
-            subtitle="Please ensure that all of your details are correct and try again."
-          />
-        )}
 
         <div
           css={{
@@ -155,6 +159,14 @@ export const Login: React.FunctionComponent<LoginProps> = props => {
             borderColor: theme.colors.border.default
           }}
         >
+          {error && (
+            <Alert
+              css={{ marginBottom: theme.spaces.md }}
+              intent="danger"
+              title="An error has occurred while logging in."
+              subtitle={error}
+            />
+          )}
           <Button
             onClick={login(loginWithGoogle)}
             css={{

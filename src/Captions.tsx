@@ -16,6 +16,7 @@ interface Caption {
 
 export interface CaptionsProps {
   captions: Caption[];
+  onRequestSeek: (seconds: number) => void;
 }
 
 export const Captions: React.FunctionComponent<CaptionsProps> = ({

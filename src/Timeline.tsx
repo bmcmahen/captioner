@@ -16,7 +16,11 @@ import * as React from "react";
  *  - zoomable and scrollable
  */
 
-export interface TimelineProps {}
+export interface TimelineProps {
+  captions: Array<any>;
+  duration: number;
+  onRequestSeek: (seconds: number) => void;
+}
 
 export const Timeline: React.FunctionComponent<TimelineProps> = props => {
   return <div>timeline</div>;

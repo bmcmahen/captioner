@@ -14,15 +14,20 @@ import {
   Alert,
   ListItem,
   Icon,
-  List
+  List,
+  LayerLoading,
+  toast
 } from "sancho";
 import { useCollection } from "react-firebase-hooks/firestore";
 import firebase from "firebase/app";
+import { useCreateProject } from "./firebase";
+import { Redirect } from "react-router";
 
 export interface MeProps {}
 
 export const Me: React.FunctionComponent<MeProps> = props => {
   const user = useSession();
+  const [newProjectId, setNewProjectId] = React.useState();
 
   const { error, loading, value } = useCollection(
     firebase
@@ -30,6 +35,26 @@ export const Me: React.FunctionComponent<MeProps> = props => {
       .collection("projects")
       .where("uid", "==", user!.uid)
   );
+
+  const { loading: creatingProject, create } = useCreateProject();
+
+  function createProject() {
+    create()
+      .then(result => {
+        setNewProjectId(result.id);
+      })
+      .catch(err => {
+        toast({
+          title: "An error occurred while creating your project",
+          subtitle: err.message || "Please try again.",
+          intent: "danger"
+        });
+      });
+  }
+
+  if (newProjectId) {
+    return <Redirect to={newProjectId} />;
+  }
 
   return (
     <LoginLayout title={user ? user.displayName || "Profile" : "Profile"}>
@@ -48,7 +73,14 @@ export const Me: React.FunctionComponent<MeProps> = props => {
               Your projects
             </Text>
             <div css={{ flex: 1 }} />
-            <Button intent="primary">New project</Button>
+            <Button
+              onClick={createProject}
+              css={{ position: "relative" }}
+              intent="primary"
+            >
+              New project
+              <LayerLoading loading={creatingProject} />
+            </Button>
           </Toolbar>
         </Navbar>
         <div>
