@@ -43,7 +43,7 @@ export const Timeline: React.FunctionComponent<TimelineProps> = ({
   const height = linearConversion([0, 5], [30, 100]);
 
   const cap = (num: number) => {
-    if (num > 100) return 100;
+    if (num > 100) return 80;
     return num;
   };
 
@@ -102,7 +102,7 @@ export const Timeline: React.FunctionComponent<TimelineProps> = ({
                   width={
                     width(item.get("endTime")) -
                     width(item.get("startTime")) +
-                    1
+                    0.3
                   }
                   height={cap(height(wpm(item)))}
                 />
