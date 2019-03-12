@@ -2,7 +2,17 @@
 import { jsx } from "@emotion/core";
 import * as React from "react";
 import TextareaAutosize from "react-autosize-textarea";
-import { Text, Toolbar, InputGroup, Check, Navbar, theme } from "sancho";
+import {
+  Text,
+  Toolbar,
+  InputGroup,
+  Check,
+  Navbar,
+  theme,
+  Button,
+  Popover,
+  Input
+} from "sancho";
 import debug from "debug";
 import { captionFactory, CaptionOptions } from "./firebase";
 import formatDuration from "format-duration";
@@ -35,10 +45,15 @@ export const Captions: React.FunctionComponent<CaptionsProps> = ({
   const [focus, setFocus] = React.useState(0);
   const [activeItem, setActiveItem] = React.useState(0);
   const [looping, setLooping] = useLocalStorage("looping", "enabled");
+  const [captionDuration, setCaptionDuration] = useLocalStorage(
+    "captionDuration",
+    "5"
+  );
+
+  const initialCaptionDuration =
+    Number(captionDuration) === 0 ? 5 : Number(captionDuration);
 
   const isLooping = looping === "enabled";
-
-  const initialCaptionDuration = 5;
 
   function minValidTime(time: number) {
     if (time < 0) return 0;
@@ -106,9 +121,41 @@ export const Captions: React.FunctionComponent<CaptionsProps> = ({
         position="static"
       >
         <Toolbar
-          css={{ display: "flex", justifyContent: "flex-end" }}
+          css={{ display: "flex", justifyContent: "space-between" }}
           compressed
         >
+          <Popover
+            content={
+              <div css={{ maxWidth: "300px", padding: theme.spaces.lg }}>
+                <form>
+                  <InputGroup
+                    label="Default caption duration (seconds)"
+                    helpText="This specifies the default caption duration (in seconds) on newly created captions."
+                  >
+                    <Input
+                      type="number"
+                      value={captionDuration}
+                      step={1}
+                      autoFocus
+                      min={1}
+                      max={30}
+                      onChange={e => {
+                        setCaptionDuration(e.target.value);
+                      }}
+                    />
+                  </InputGroup>
+                </form>
+              </div>
+            }
+          >
+            <Button
+              css={{ marginLeft: "-1.4rem", paddingLeft: "0.9rem" }}
+              size="sm"
+              variant="ghost"
+            >
+              Caption Duration: {initialCaptionDuration}s
+            </Button>
+          </Popover>
           <form>
             <Check
               onChange={() => setLooping(isLooping ? "false" : "enabled")}
@@ -372,7 +419,7 @@ const Caption = ({
         {
           display: "flex",
           alignItems: "flex-start",
-          paddingLeft: theme.spaces.sm,
+          paddingLeft: theme.spaces.md,
           position: "relative",
           background: "white"
         },
@@ -409,7 +456,8 @@ const Caption = ({
           outline: "none",
           fontSize: theme.sizes[1],
           padding: `${theme.spaces.sm} 0`,
-          marginLeft: theme.spaces.xs,
+          paddingRight: theme.spaces.sm,
+          marginLeft: theme.spaces.sm,
           borderBottom: `1px solid ${theme.colors.border.muted}`
         }}
         innerRef={(el: any) => (textarea.current = el)}
