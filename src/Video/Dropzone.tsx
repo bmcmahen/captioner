@@ -48,14 +48,17 @@ export const Dropzone: React.FunctionComponent<DropzoneProps> = ({
     <div
       css={{
         width: "100%",
-        height: "100%"
+        height: "100%",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center"
       }}
       onDrop={onDrop}
     >
       <VisuallyHidden>
         <input onChange={onFileChange} type="file" ref={fileRef} />
       </VisuallyHidden>
-      <Button onClick={onSelectFileClick}>Select a file...</Button>
+      <Button onClick={onSelectFileClick}>Select a video...</Button>
     </div>
   );
 };

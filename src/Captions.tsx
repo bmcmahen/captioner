@@ -32,23 +32,32 @@ export interface CaptionsProps {
   captions: firebase.firestore.QuerySnapshot;
   onRequestSeek: (seconds: number) => void;
   currentTime?: number;
+  active: number;
   duration: number;
 }
 
 export const Captions: React.FunctionComponent<CaptionsProps> = ({
   captions,
   currentTime,
+  active,
   duration,
   collectionReference,
   onRequestSeek
 }) => {
-  const [focus, setFocus] = React.useState(0);
-  const [activeItem, setActiveItem] = React.useState(0);
+  const [focus, setFocus] = React.useState(active);
+  const [activeItem, setActiveItem] = React.useState(active);
   const [looping, setLooping] = useLocalStorage("looping", "enabled");
   const [captionDuration, setCaptionDuration] = useLocalStorage(
     "captionDuration",
     "5"
   );
+
+  React.useEffect(() => {
+    if (active !== activeItem) {
+      setActiveItem(active);
+      setFocus(active);
+    }
+  }, [active]);
 
   const initialCaptionDuration =
     Number(captionDuration) === 0 ? 5 : Number(captionDuration);
@@ -61,7 +70,7 @@ export const Captions: React.FunctionComponent<CaptionsProps> = ({
   }
 
   function maxValidTime(time: number) {
-    if (time > duration - 0.01) return duration - 0.01;
+    if (time > duration) return duration;
     return time;
   }
 
@@ -113,11 +122,18 @@ export const Captions: React.FunctionComponent<CaptionsProps> = ({
     <div
       css={{
         width: "100%",
-        height: "100%"
+        height: "100%",
+        display: "flex",
+        flexDirection: "column"
       }}
     >
       <Navbar
-        css={{ borderBottom: `1px solid ${theme.colors.border.muted}` }}
+        css={{
+          background: theme.colors.background.tint1,
+          borderTop: `1px solid ${theme.colors.border.default}`,
+          flex: "0 0 auto",
+          borderBottom: `1px solid ${theme.colors.border.muted}`
+        }}
         position="static"
       >
         <Toolbar
@@ -127,7 +143,7 @@ export const Captions: React.FunctionComponent<CaptionsProps> = ({
           <Popover
             content={
               <div css={{ maxWidth: "300px", padding: theme.spaces.lg }}>
-                <form>
+                <form onSubmit={e => e.preventDefault()}>
                   <InputGroup
                     label="Default caption duration (seconds)"
                     helpText="This specifies the default caption duration (in seconds) on newly created captions."
@@ -167,6 +183,7 @@ export const Captions: React.FunctionComponent<CaptionsProps> = ({
       </Navbar>
       <div
         css={{
+          flex: 1,
           overflowY: "scroll",
           WebkitOverflowScrolling: "touch"
         }}
@@ -191,7 +208,7 @@ export const Captions: React.FunctionComponent<CaptionsProps> = ({
                 }
 
                 // 2. Otherwise, insert a new empty caption and focus it.
-                const newStart = caption.get("endTime") + 0.01;
+                const newStart = caption.get("endTime") + 0.001;
 
                 // don't if we are on the last one
                 if (newStart >= duration) {
@@ -439,7 +456,13 @@ const Caption = ({
         ]}
         htmlFor={caption.id}
       >
-        <Text muted variant="subtitle">
+        <Text
+          muted
+          variant="subtitle"
+          css={{
+            fontFamily: "helvetica"
+          }}
+        >
           {formatDuration(caption.get("startTime") * 1000)} -{" "}
           {formatDuration(caption.get("endTime") * 1000)}
         </Text>

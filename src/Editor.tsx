@@ -18,6 +18,7 @@ export interface EditorProps extends RouteChildrenProps<any> {}
 
 export const Editor: React.FunctionComponent<EditorProps> = ({ match }) => {
   const { id } = match && match.params;
+  const [active, setActive] = React.useState(0);
 
   // load the document containing meta about the project
   const { error, loading, value: meta } = useDocument(
@@ -127,6 +128,7 @@ export const Editor: React.FunctionComponent<EditorProps> = ({ match }) => {
             duration={meta.get("duration")}
             captions={captions.value}
             collectionReference={subcollection}
+            active={active}
           />
         )}
       </CaptionsContainer>
@@ -136,6 +138,9 @@ export const Editor: React.FunctionComponent<EditorProps> = ({ match }) => {
           <Timeline
             captions={captions.value}
             currentTime={time}
+            onRequestSkip={i => {
+              setActive(i);
+            }}
             duration={meta.get("duration")}
             onRequestSeek={seekTo}
           />
@@ -150,11 +155,12 @@ function Layout({ children, ...other }: { children: React.ReactNode }) {
     <div
       css={css`
         height: 100vh;
+        overflow: hidden;
         width: 100vw;
         display: grid;
         box-sizing: border-box;
         grid-template-columns: 25% 25% 25% 25%;
-        grid-template-rows: auto 100px;
+        grid-template-rows: auto 75px;
         grid-template-areas:
           "video video editor editor"
           "timeline timeline timeline timeline";
@@ -171,7 +177,10 @@ function TimelineContainer({ children }: { children?: React.ReactNode }) {
     <div
       css={{
         gridArea: "timeline",
-        background: theme.colors.background.tint2
+        // background: "white",
+        borderTop: "1px solid",
+        borderColor: theme.colors.border.muted,
+        background: theme.colors.background.tint1
       }}
     >
       {children}
@@ -184,7 +193,8 @@ function CaptionsContainer({ children }: { children?: React.ReactNode }) {
     <div
       css={{
         gridArea: "editor",
-        background: "white"
+        background: "white",
+        overflow: "hidden"
       }}
     >
       {" "}
@@ -197,7 +207,8 @@ function VideoContainer({ children }: { children?: React.ReactNode }) {
   return (
     <div
       css={{
-        gridArea: "video"
+        gridArea: "video",
+        background: theme.colors.background.tint2
       }}
     >
       {children}

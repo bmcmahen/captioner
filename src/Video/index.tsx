@@ -3,7 +3,7 @@ import { jsx } from "@emotion/core";
 import * as React from "react";
 import ReactPlayer from "react-player";
 import { Dropzone } from "./Dropzone";
-import { Embed } from "sancho";
+import { Embed, theme } from "sancho";
 import debug from "debug";
 
 const log = debug("app:Video");
@@ -35,7 +35,16 @@ export const Video: React.FunctionComponent<VideoProps> = ({
 
   if (!url) {
     return (
-      <div>
+      <div
+        css={{
+          width: "100%",
+          height: "100%",
+          background: theme.colors.palette.gray.base,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center"
+        }}
+      >
         <Dropzone onRequestAddURL={setVideoURL} />
       </div>
     );
@@ -60,7 +69,7 @@ export const Video: React.FunctionComponent<VideoProps> = ({
       css={{
         width: "100%",
         height: "100%",
-        background: "black",
+        background: theme.colors.palette.gray.base,
         display: "flex",
         alignItems: "center",
         justifyContent: "center"

@@ -13,7 +13,7 @@ export const EditorNav: React.FunctionComponent<EditorNavProps> = props => {
     <Navbar
       css={{
         boxShadow: "none",
-        borderBottom: `1px solid ${theme.colors.border.default}`
+        background: theme.colors.background.tint1
       }}
     >
       <Toolbar>
