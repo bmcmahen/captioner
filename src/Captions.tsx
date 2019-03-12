@@ -202,8 +202,9 @@ export const Captions: React.FunctionComponent<CaptionsProps> = ({
                   next &&
                   next.get("startTime") - caption.get("endTime") < 1
                 ) {
-                  setFocus(i + 1);
                   setActiveItem(i + 1);
+                  setFocus(i + 1);
+
                   return;
                 }
 
@@ -339,14 +340,15 @@ const Caption = ({
     }
   }, [focus]);
 
-  React.useEffect(() => {
-    if (active && container.current) {
-      container.current!.scrollIntoView({
-        behavior: "smooth",
-        block: "end"
-      });
-    }
-  }, [active]);
+  // React.useEffect(() => {
+  //   if (active && container.current) {
+  //     container.current!.scrollIntoView({
+  //       behavior: "smooth",
+  //       block: "end",
+  //       inline: "nearest"
+  //     });
+  //   }
+  // }, [active]);
 
   // handle autosave
   React.useEffect(() => {
