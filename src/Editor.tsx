@@ -20,25 +20,25 @@ export const Editor: React.FunctionComponent<EditorProps> = ({ match }) => {
   const { id } = match && match.params;
 
   // load the document containing meta about the project
-  const { error, loading, value } = useDocument(
+  const { error, loading, value: meta } = useDocument(
     firebase
       .firestore()
       .collection("captions")
       .doc(id)
   );
 
+  const subcollection = firebase
+    .firestore()
+    .collection("captions")
+    .doc(id)
+    .collection("entries");
+
   // load the actual captions themselves
-  const captions = useCollection(
-    firebase
-      .firestore()
-      .collection("captions")
-      .doc(id)
-      .collection("entries")
-  );
+  const captions = useCollection(subcollection.orderBy("startTime"));
 
   // the current video url
   const [video, setVideo] = React.useState<string | null>(
-    value ? value.get("video") : null
+    meta ? meta.get("video") : null
   );
 
   // the current playback time
@@ -46,32 +46,32 @@ export const Editor: React.FunctionComponent<EditorProps> = ({ match }) => {
 
   // update our doucment title
   React.useEffect(() => {
-    if (value && value.exists) {
-      document.title = value.get("title");
+    if (meta && meta.exists) {
+      document.title = meta.get("title");
     }
-  }, [value]);
+  }, [meta]);
 
   // set the video URL and save to firebase
   function setVideoURL(url: string, canSave: boolean, name: string) {
     setVideo(url);
 
     // we can't save huge object urls to firebase
-    if (canSave && value) {
+    if (canSave && meta) {
       log("save this url to firebase");
-      value.ref.set({ url });
+      meta.ref.set({ url }, { merge: true });
     }
 
-    // save the video name to firebase
-    if (value) {
-      value.ref.set({ title: name });
+    // save the video name to firebase if different
+    if (meta && meta.get("title") !== name) {
+      meta.ref.set({ title: name }, { merge: true });
     }
   }
 
   // set the current video duration
   // should we warn if the duration changes from saved?
   function setVideoDuration(seconds: number) {
-    if (value) {
-      value.ref.set({ duration: seconds }, { merge: true });
+    if (meta) {
+      meta.ref.set({ duration: seconds }, { merge: true });
     }
   }
 
@@ -92,7 +92,7 @@ export const Editor: React.FunctionComponent<EditorProps> = ({ match }) => {
   }
 
   // error is loading errors or the document doesn't exist
-  if (error || (value && !value.exists)) {
+  if (error || (meta && !meta.exists)) {
     return <div>Alert</div>;
   }
 
@@ -109,7 +109,7 @@ export const Editor: React.FunctionComponent<EditorProps> = ({ match }) => {
 
   return (
     <Layout css={responsiveBodyPadding}>
-      <EditorNav title={value && value.get("title")} />
+      <EditorNav title={meta && meta.get("title")} />
       <VideoContainer>
         <Video
           setVideoDuration={setVideoDuration}
@@ -120,21 +120,23 @@ export const Editor: React.FunctionComponent<EditorProps> = ({ match }) => {
         />
       </VideoContainer>
       <CaptionsContainer>
-        {value && captions.value && (
+        {meta && captions.value && (
           <Captions
             currentTime={time}
             onRequestSeek={seekTo}
+            duration={meta.get("duration")}
             captions={captions.value}
+            collectionReference={subcollection}
           />
         )}
       </CaptionsContainer>
 
       <TimelineContainer>
-        {value && value.get("duration") && captions.value && (
+        {meta && meta.get("duration") && captions.value && (
           <Timeline
             captions={captions.value}
             currentTime={time}
-            duration={value.get("duration")}
+            duration={meta.get("duration")}
             onRequestSeek={seekTo}
           />
         )}

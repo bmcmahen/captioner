@@ -2,8 +2,11 @@
 import { jsx } from "@emotion/core";
 import * as React from "react";
 import TextareaAutosize from "react-autosize-textarea";
-import { Text } from "sancho";
+import { Text, Toolbar, InputGroup, Check, Navbar, theme } from "sancho";
 import debug from "debug";
+import { captionFactory, CaptionOptions } from "./firebase";
+import formatDuration from "format-duration";
+import useLocalStorage from "react-use-localstorage";
 
 const log = debug("app:Captions");
 
@@ -15,53 +18,213 @@ interface Caption {
 }
 
 export interface CaptionsProps {
+  collectionReference: firebase.firestore.CollectionReference;
   captions: firebase.firestore.QuerySnapshot;
   onRequestSeek: (seconds: number) => void;
   currentTime?: number;
+  duration: number;
 }
 
 export const Captions: React.FunctionComponent<CaptionsProps> = ({
-  captions
+  captions,
+  currentTime,
+  duration,
+  collectionReference,
+  onRequestSeek
 }) => {
   const [focus, setFocus] = React.useState(0);
+  const [activeItem, setActiveItem] = React.useState(0);
+  const [looping, setLooping] = useLocalStorage("looping", "enabled");
+
+  const isLooping = looping === "enabled";
+
+  const initialCaptionDuration = 5;
+
+  function minValidTime(time: number) {
+    if (time < 0) return 0;
+    return time;
+  }
+
+  function maxValidTime(time: number) {
+    if (time > duration - 0.01) return duration - 0.01;
+    return time;
+  }
+
+  React.useEffect(() => {
+    // add our default caption if we don't have one yet
+    if (captions.docs.length === 0) {
+      addCaption(
+        captionFactory({
+          startTime: 0,
+          endTime: maxValidTime(initialCaptionDuration)
+        })
+      );
+    }
+  }, [captions]);
+
+  React.useEffect(() => {
+    const activeItem = captions.docs[focus];
+
+    // handle looping if enabled
+    if (typeof currentTime === "number" && activeItem && isLooping) {
+      if (currentTime > activeItem.get("endTime")) {
+        onRequestSeek(activeItem.get("startTime"));
+        return;
+      }
+    }
+
+    // otherwise, cycle through our components to find
+    // the one we should focus
+    if (typeof currentTime === "number") {
+      captions.docs.some((caption, i) => {
+        const d = caption.data();
+        if (d.startTime > currentTime && currentTime < d.endTime) {
+          if (i !== focus) {
+            setActiveItem(i - 1);
+            return true;
+          }
+          return false;
+        }
+        return false;
+      });
+    }
+  }, [currentTime, captions]);
+
+  function addCaption(options: CaptionOptions) {
+    collectionReference.add(captionFactory(options));
+  }
 
   return (
     <div
       css={{
         width: "100%",
-        height: "100%",
-        overflowY: "scroll",
-        WebkitOverflowScrolling: "touch"
+        height: "100%"
       }}
     >
-      {captions.docs.map((caption, i) => {
-        return (
-          <Caption
-            focus={i === focus}
-            onRequestNext={() => {
-              log("request next");
-              // 1. If another caption exists after this one, focus it
-              // 2. Otherwise, insert a new empty caption and focus it.
-            }}
-            updateToNextTimeAllotment={() => {
-              // 1. endTime + standard duration
-              log("update to next time allotment");
-            }}
-            onRequestDelete={() => {
-              // 1. if there's only one caption left, don't delete it
-              // 2. focus our previous caption
-              // 3. delete from firebase
-              log("delete this caption");
-            }}
-            onRequestUpdateTime={({ startTime, endTime }) => {
-              // 1. update the time on firebase
-              log("update time to: %s, %s", startTime, endTime);
-            }}
-            caption={caption}
-            key={caption.id}
-          />
-        );
-      })}
+      <Navbar
+        css={{ borderBottom: `1px solid ${theme.colors.border.muted}` }}
+        position="static"
+      >
+        <Toolbar
+          css={{ display: "flex", justifyContent: "flex-end" }}
+          compressed
+        >
+          <form>
+            <Check
+              onChange={() => setLooping(isLooping ? "false" : "enabled")}
+              checked={isLooping}
+              label="Loop video"
+            />
+          </form>
+        </Toolbar>
+      </Navbar>
+      <div
+        css={{
+          overflowY: "scroll",
+          WebkitOverflowScrolling: "touch"
+        }}
+      >
+        {captions.docs.map((caption, i) => {
+          return (
+            <Caption
+              active={i === activeItem}
+              focus={i === focus}
+              onRequestNext={() => {
+                log("request next");
+
+                // 1. If another caption exists after this one, focus it
+                const next = captions.docs[i + 1];
+                if (
+                  next &&
+                  next.get("startTime") - caption.get("endTime") < 1
+                ) {
+                  setFocus(i + 1);
+                  setActiveItem(i + 1);
+                  return;
+                }
+
+                // 2. Otherwise, insert a new empty caption and focus it.
+                const newStart = caption.get("endTime") + 0.01;
+
+                // don't if we are on the last one
+                if (newStart >= duration) {
+                  return;
+                }
+
+                addCaption({
+                  startTime: newStart,
+                  endTime: maxValidTime(newStart + initialCaptionDuration)
+                });
+
+                setFocus(i + 1);
+                setActiveItem(i + 1);
+              }}
+              updateToNextTimeAllotment={() => {
+                // 1. ignore if last time allotment
+                if (caption.get("endTime") >= duration) {
+                  return;
+                }
+
+                // 2. endTime + standard duration
+                log("update to next time allotment");
+                caption.ref.set(
+                  {
+                    startTime: caption.get("endTime"),
+                    endTime: maxValidTime(
+                      caption.get("endTime") + initialCaptionDuration
+                    )
+                  },
+                  { merge: true }
+                );
+              }}
+              onRequestDelete={() => {
+                // 1. if there's only one caption left, don't delete it
+                if (captions.docs.length === 1) {
+                  // possibly update to previous timestamps, though
+                  if (caption.get("startTime") > 0) {
+                    caption.ref.set({
+                      startTime: minValidTime(
+                        caption.get("startTime") - initialCaptionDuration
+                      ),
+                      endTime: caption.get("endTime") - initialCaptionDuration
+                    });
+                  }
+                  return;
+                }
+
+                // 2. focus our previous caption
+                setFocus(i - 1);
+                setActiveItem(i - 1);
+
+                // 3. delete from firebase
+                log("delete this caption");
+                caption.ref.delete();
+              }}
+              onFocus={() => {
+                setFocus(i);
+                setActiveItem(i);
+                onRequestSeek(caption.get("startTime"));
+              }}
+              onRequestUpdateTime={({ startTime, endTime }) => {
+                // 1. update the time on firebase
+                log("update time to: %s, %s", startTime, endTime);
+                caption.ref.set(
+                  {
+                    startTime: minValidTime(startTime),
+                    endTime: maxValidTime(endTime)
+                  },
+                  { merge: true }
+                );
+              }}
+              onRequestSaveContent={(content: string) => {
+                caption.ref.set({ content }, { merge: true });
+              }}
+              caption={caption}
+              key={caption.id}
+            />
+          );
+        })}
+      </div>
     </div>
   );
 };
@@ -74,7 +237,10 @@ interface TimeArgs {
 interface CaptionProps {
   caption: firebase.firestore.QueryDocumentSnapshot;
   focus: boolean;
+  active: boolean;
   onRequestNext: () => void;
+  onFocus: () => void;
+  onRequestSaveContent: (value: string) => void;
   updateToNextTimeAllotment: () => void;
   onRequestDelete: () => void;
   onRequestUpdateTime: (time: TimeArgs) => void;
@@ -90,12 +256,16 @@ interface CaptionProps {
 const Caption = ({
   caption,
   focus,
+  onFocus,
+  active,
   onRequestDelete,
   onRequestUpdateTime,
   onRequestNext,
+  onRequestSaveContent,
   updateToNextTimeAllotment
 }: CaptionProps) => {
-  const textarea = React.useRef<HTMLInputElement>(null);
+  const container = React.useRef<HTMLDivElement | null>(null);
+  const textarea = React.useRef<HTMLInputElement | null>(null);
   const [value, setValue] = React.useState(caption.get("content"));
 
   // handle focus
@@ -105,10 +275,19 @@ const Caption = ({
     }
   }, [focus]);
 
+  React.useEffect(() => {
+    if (active && container.current) {
+      container.current!.scrollIntoView({
+        behavior: "smooth",
+        block: "end"
+      });
+    }
+  }, [active]);
+
   // handle autosave
   React.useEffect(() => {
     const timer = setTimeout(() => {
-      console.log("save");
+      onRequestSaveContent(value);
     }, 1000);
 
     return () => clearTimeout(timer);
@@ -187,29 +366,64 @@ const Caption = ({
   }
 
   return (
-    <div css={{ display: "flex" }}>
-      <label htmlFor={caption.id}>
-        <Text variant="subtitle">
-          {caption.get("startTime")} - {caption.get("endTime")}
+    <div
+      ref={container}
+      css={[
+        {
+          display: "flex",
+          alignItems: "flex-start",
+          paddingLeft: theme.spaces.sm,
+          position: "relative",
+          background: "white"
+        },
+        active && {
+          background: "#f1f3f552"
+        }
+      ]}
+    >
+      <label
+        css={[
+          {
+            width: "100px",
+            position: "relative",
+            lineHeight: theme.lineHeight,
+            paddingTop: `calc(${theme.spaces.sm} + 2px)`
+          }
+        ]}
+        htmlFor={caption.id}
+      >
+        <Text muted variant="subtitle">
+          {formatDuration(caption.get("startTime") * 1000)} -{" "}
+          {formatDuration(caption.get("endTime") * 1000)}
         </Text>
       </label>
       <TextareaAutosize
-        innerRef={textarea as any}
+        css={{
+          border: "none",
+          width: "100%",
+          fontFamily: theme.fonts.base,
+          color: theme.colors.text.muted,
+          resize: "none",
+          background: "transparent",
+          lineHeight: theme.lineHeight,
+          outline: "none",
+          fontSize: theme.sizes[1],
+          padding: `${theme.spaces.sm} 0`,
+          marginLeft: theme.spaces.xs,
+          borderBottom: `1px solid ${theme.colors.border.muted}`
+        }}
+        innerRef={(el: any) => (textarea.current = el)}
         id={caption.id}
         value={value}
+        onFocus={onFocus}
+        onBlur={e => {
+          if (caption.get("content") !== e.currentTarget.value) {
+            onRequestSaveContent(e.currentTarget.value);
+          }
+        }}
         onChange={e => setValue(e.currentTarget.value)}
         onKeyDown={onkeydown}
       />
     </div>
   );
 };
-
-function minValidTime(time: number) {
-  if (time < 0) return 0;
-  return time;
-}
-
-function maxValidTime(duration: number, time: number) {
-  if (time > duration) return duration;
-  return time;
-}

@@ -10,6 +10,7 @@
     "@emotion/core": "^10.0.7",
     "@emotion/css": "^10.0.7",
     "@types/debug": "^4.1.2",
+    "@types/format-duration": "^1.0.1",
     "@types/jest": "24.0.9",
     "@types/node": "11.10.5",
     "@types/query-string": "^6.3.0",
@@ -21,6 +22,7 @@
     "date-fns": "^1.30.1",
     "debug": "^4.1.1",
     "firebase": "^5.8.6",
+    "format-duration": "^1.3.1",
     "query-string": "^6.3.0",
     "react": "^16.8.4",
     "react-autosize-textarea": "^6.0.0",
@@ -31,6 +33,7 @@
     "react-router": "^4.4.0-beta.7",
     "react-router-dom": "^4.4.0-beta.7",
     "react-scripts": "2.1.8",
+    "react-use-localstorage": "^3.0.0",
     "sancho": "file:../sancho",
     "typescript": "3.3.3333",
     "use-react-router": "^1.0.3"

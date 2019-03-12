@@ -47,11 +47,25 @@ export function useCreateProject() {
   };
 }
 
-function projectFactory(uid: string) {
+export function projectFactory(uid: string) {
   return {
     title: format(new Date(), "MMMM Do, YYYY"),
-    createdAt: new Date(),
-    updatedAt: new Date(),
+    createdAt: firebase.firestore.Timestamp.fromDate(new Date()),
+    updatedAt: firebase.firestore.Timestamp.fromDate(new Date()),
     uid
+  };
+}
+
+export interface CaptionOptions {
+  startTime: number;
+  endTime: number;
+  content?: string;
+}
+
+export function captionFactory(options: CaptionOptions) {
+  return {
+    content: "",
+    createdAt: firebase.firestore.Timestamp.fromDate(new Date()),
+    ...options
   };
 }

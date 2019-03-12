@@ -22,6 +22,7 @@ import { useCollection } from "react-firebase-hooks/firestore";
 import firebase from "firebase/app";
 import { useCreateProject } from "./firebase";
 import { Redirect } from "react-router";
+import { Link } from "react-router-dom";
 
 export interface MeProps {}
 
@@ -32,7 +33,7 @@ export const Me: React.FunctionComponent<MeProps> = props => {
   const { error, loading, value } = useCollection(
     firebase
       .firestore()
-      .collection("projects")
+      .collection("captions")
       .where("uid", "==", user!.uid)
   );
 
@@ -61,13 +62,19 @@ export const Me: React.FunctionComponent<MeProps> = props => {
       <Layer
         elevation="sm"
         css={{
-          marginTop: "4.5rem",
           overflow: "hidden",
           maxWidth: "550px",
-          width: "100%"
+          width: "100%",
+          marginTop: theme.spaces.md
         }}
       >
-        <Navbar css={{ boxShadow: theme.shadows.xs }} position="static">
+        <Navbar
+          css={{
+            boxShadow: "none",
+            borderBottom: `1px solid ${theme.colors.border.muted}`
+          }}
+          position="static"
+        >
           <Toolbar>
             <Text gutter={false} variant="h5">
               Your projects
@@ -76,10 +83,11 @@ export const Me: React.FunctionComponent<MeProps> = props => {
             <Button
               onClick={createProject}
               css={{ position: "relative" }}
+              loading={creatingProject}
+              disabled={creatingProject}
               intent="primary"
             >
               New project
-              <LayerLoading loading={creatingProject} />
             </Button>
           </Toolbar>
         </Navbar>
@@ -117,10 +125,17 @@ export const Me: React.FunctionComponent<MeProps> = props => {
           )}
           <List>
             {value &&
-              value.docs.map(doc => {
+              value.docs.map((doc, i) => {
                 return (
                   <ListItem
                     key={doc.id}
+                    component={Link}
+                    css={{
+                      padding: `${theme.spaces.md} ${theme.spaces.lg}`,
+                      borderBottom:
+                        i === value.docs.length - 1 ? "none" : undefined
+                    }}
+                    to={doc.id}
                     primary={doc.get("title")}
                     iconAfter={<Icon icon="chevron-right" />}
                   />
