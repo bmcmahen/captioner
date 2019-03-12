@@ -178,8 +178,8 @@ function TimelineContainer({ children }: { children?: React.ReactNode }) {
       css={{
         gridArea: "timeline",
         // background: "white",
-        borderTop: "1px solid",
-        borderColor: theme.colors.border.muted,
+        // borderTop: "1px solid",
+        // borderColor: theme.colors.border.muted,
         background: theme.colors.background.tint1
       }}
     >

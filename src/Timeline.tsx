@@ -40,10 +40,10 @@ export const Timeline: React.FunctionComponent<TimelineProps> = ({
 
   const container = React.useRef<HTMLDivElement>(null);
   const width = linearConversion([0, duration], [0, container.current ? w : 0]);
-  const height = linearConversion([0, 10], [30, 100]);
+  const height = linearConversion([0, 5], [30, 100]);
 
   const cap = (num: number) => {
-    if (num > 150) return num;
+    if (num > 100) return 100;
     return num;
   };
 
@@ -80,17 +80,18 @@ export const Timeline: React.FunctionComponent<TimelineProps> = ({
         >
           {transitions.map(({ item, key, props }, i) => {
             return (
-              <Tooltip content={item.get("content")}>
+              <Tooltip key={key} content={item.get("content")}>
                 <animated.rect
                   onClick={() => {
                     onRequestSkip(i);
                   }}
                   style={props}
                   css={{
+                    transition: "height 0.2s ease",
                     cursor: "pointer",
                     ":hover": {
                       fill: color(getColor(wpm(item), false))
-                        .darken(0.1)
+                        .lighten(0.2)
                         .toString()
                     }
                   }}
