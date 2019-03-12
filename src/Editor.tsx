@@ -18,7 +18,7 @@ export interface EditorProps extends RouteChildrenProps<any> {}
 
 export const Editor: React.FunctionComponent<EditorProps> = ({ match }) => {
   const { id } = match && match.params;
-  const [active, setActive] = React.useState(0);
+  const [active, setActive] = React.useState<number | null>(0);
 
   // load the document containing meta about the project
   const { error, loading, value: meta } = useDocument(
@@ -86,8 +86,14 @@ export const Editor: React.FunctionComponent<EditorProps> = ({ match }) => {
   const player = React.useRef<ReactPlayer>(null);
 
   // allow components to seek to a particular time in the video
-  function seekTo(seconds: number) {
+  function seekTo(seconds: number, blur: boolean = false) {
     if (player && player.current) {
+      // blur when seeking outside of an established caption
+      // this feels hacky, but seems to work
+      if (blur) {
+        setActive(null);
+      }
+
       player.current.seekTo(seconds);
     }
   }
@@ -160,7 +166,7 @@ function Layout({ children, ...other }: { children: React.ReactNode }) {
         display: grid;
         box-sizing: border-box;
         grid-template-columns: 25% 25% 25% 25%;
-        grid-template-rows: auto 75px;
+        grid-template-rows: auto 100px;
         grid-template-areas:
           "video video editor editor"
           "timeline timeline timeline timeline";

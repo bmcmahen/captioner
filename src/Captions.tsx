@@ -32,7 +32,7 @@ export interface CaptionsProps {
   captions: firebase.firestore.QuerySnapshot;
   onRequestSeek: (seconds: number) => void;
   currentTime?: number;
-  active: number;
+  active: number | null;
   duration: number;
 }
 
@@ -87,7 +87,7 @@ export const Captions: React.FunctionComponent<CaptionsProps> = ({
   }, [captions]);
 
   React.useEffect(() => {
-    const activeItem = captions.docs[focus];
+    const activeItem = typeof focus === "number" ? captions.docs[focus] : null;
 
     // handle looping if enabled
     if (typeof currentTime === "number" && activeItem && isLooping) {
@@ -129,7 +129,7 @@ export const Captions: React.FunctionComponent<CaptionsProps> = ({
     >
       <Navbar
         css={{
-          background: theme.colors.background.tint1,
+          background: "white",
           borderTop: `1px solid ${theme.colors.border.default}`,
           flex: "0 0 auto",
           borderBottom: `1px solid ${theme.colors.border.muted}`
@@ -177,6 +177,11 @@ export const Captions: React.FunctionComponent<CaptionsProps> = ({
               onChange={() => setLooping(isLooping ? "false" : "enabled")}
               checked={isLooping}
               label="Loop video"
+              css={{
+                "& span": {
+                  fontSize: theme.sizes[0]
+                }
+              }}
             />
           </form>
         </Toolbar>
@@ -342,11 +347,8 @@ const Caption = ({
 
   // React.useEffect(() => {
   //   if (active && container.current) {
-  //     container.current!.scrollIntoView({
-  //       behavior: "smooth",
-  //       block: "end",
-  //       inline: "nearest"
-  //     });
+  //     console.log("set active", active, caption.get("content"));
+  //     container.current!.scrollIntoView(false);
   //   }
   // }, [active]);
 
@@ -479,7 +481,7 @@ const Caption = ({
           background: "transparent",
           lineHeight: theme.lineHeight,
           outline: "none",
-          fontSize: theme.sizes[1],
+          fontSize: theme.sizes[0],
           padding: `${theme.spaces.sm} 0`,
           paddingRight: theme.spaces.sm,
           marginLeft: theme.spaces.sm,

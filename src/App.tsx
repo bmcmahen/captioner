@@ -13,6 +13,11 @@ import { Branding } from "./Branding";
 import { useSession } from "./auth";
 import { NewProject } from "./NewProject";
 import { Me } from "./Me";
+import debug from "debug";
+
+if (process.env.NODE_ENV !== "production") {
+  debug.enable("app:*");
+}
 
 export interface AppProps {}
 

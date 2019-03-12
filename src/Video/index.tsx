@@ -51,7 +51,7 @@ export const Video: React.FunctionComponent<VideoProps> = ({
   }
 
   function onProgress(progress: any) {
-    log("progress: %o", progress);
+    // log("progress: %o", progress);
     setCurrentTime(progress.playedSeconds);
   }
 
@@ -84,6 +84,7 @@ export const Video: React.FunctionComponent<VideoProps> = ({
           height="auto"
           url={url}
           onProgress={onProgress}
+          progressInterval={350}
           onSeek={onSeek}
           onDuration={onDuration}
         />
