@@ -385,12 +385,14 @@ const Caption = ({
     }
   }, [focus]);
 
-  // React.useEffect(() => {
-  //   if (active && container.current) {
-  //     console.log("set active", active, caption.get("content"));
-  //     container.current!.scrollIntoView(false);
-  //   }
-  // }, [active]);
+  React.useEffect(() => {
+    if (!focus && active && container.current) {
+      container.current!.scrollIntoView({
+        behavior: "smooth",
+        block: "end"
+      });
+    }
+  }, [active, focus]);
 
   // handle autosave
   React.useEffect(() => {

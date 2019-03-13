@@ -103,6 +103,7 @@ export const Editor: React.FunctionComponent<EditorProps> = ({ match }) => {
         setActive(null);
       }
 
+      // setTime(seconds);
       player.current.seekTo(seconds);
     }
   }

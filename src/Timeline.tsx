@@ -78,7 +78,8 @@ export const Timeline: React.FunctionComponent<TimelineProps> = ({
   });
 
   const spring = useSpring({
-    width: currentTime ? width(currentTime) : 0
+    width: currentTime ? width(currentTime) : 0,
+    immediate: true
   });
 
   function onMouseMove(e: React.MouseEvent) {
@@ -129,9 +130,9 @@ export const Timeline: React.FunctionComponent<TimelineProps> = ({
           <animated.rect
             x={0}
             y={0}
-            height={100}
+            height={77}
             style={spring}
-            fill="#cfd2ef73"
+            fill={theme.colors.background.tint2}
           />
 
           {/* click to skip hover indicator */}
@@ -147,8 +148,8 @@ export const Timeline: React.FunctionComponent<TimelineProps> = ({
                 x={width(mouse)}
                 height={100}
                 y={0}
-                width={3}
-                fill={"#cfd2ef73"}
+                width={2}
+                fill={theme.colors.scales.gray[5]}
               />
               <animated.text
                 style={{
