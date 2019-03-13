@@ -248,7 +248,7 @@ function TimelineContainer({ children }: { children?: React.ReactNode }) {
 }
 
 function CaptionsContainer({ children }: { children?: React.ReactNode }) {
-  return <div css={{ flex: "1 1 50%" }}> {children}</div>;
+  return <div css={{ flex: "0 0 550px" }}> {children}</div>;
 }
 
 function VideoContainer({ children }: { children?: React.ReactNode }) {

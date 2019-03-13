@@ -192,11 +192,11 @@ export const Captions: React.FunctionComponent<CaptionsProps> = ({
                 variant="ghost"
                 icon="repeat"
                 onClick={() => setLooping(isLooping ? "false" : "enabled")}
-                style={{
-                  color: isLooping
+                color={
+                  isLooping
                     ? theme.colors.text.selected
-                    : theme.colors.text.muted
-                }}
+                    : theme.colors.palette.gray.light
+                }
                 label="Repeat"
               />
             </Tooltip>
@@ -473,10 +473,13 @@ const Caption = ({
           paddingLeft: theme.spaces.md,
           position: "relative",
           transition: "background 0.15s ease",
-          background: "transparent"
+          background: "transparent",
+          marginTop: "-1px",
+          marginBottom: "-1px"
         },
         active && {
-          background: "#f1f3f552"
+          background: theme.colors.palette.gray.lightest,
+          zIndex: 5
         }
       ]}
     >

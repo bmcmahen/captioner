@@ -67,6 +67,9 @@ export const Timeline: React.FunctionComponent<TimelineProps> = ({
     return len / duration;
   }
 
+  // mount transition
+  // todo: use 'update' to also animate our height when a doc changes,
+  // but don't animate the height otherwise (just use translate)
   const transitions = useTransition(captions.docs, item => item.id, {
     from: { transform: "translateY(100%)" },
     enter: { transform: "translateY(0)" },
