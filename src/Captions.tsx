@@ -178,6 +178,14 @@ export const Captions: React.FunctionComponent<CaptionsProps> = ({
             </Button>
           </Popover>
           <div css={{ display: "flex", alignItems: "center" }}>
+            <Tooltip content="Show shortcuts">
+              <IconButton
+                size="md"
+                variant="ghost"
+                icon="help"
+                label="Show shortcuts"
+              />
+            </Tooltip>
             <Tooltip content="Toggle looping">
               <IconButton
                 size="md"
@@ -464,7 +472,8 @@ const Caption = ({
           alignItems: "flex-start",
           paddingLeft: theme.spaces.md,
           position: "relative",
-          background: "white"
+          transition: "background 0.15s ease",
+          background: "transparent"
         },
         active && {
           background: "#f1f3f552"
