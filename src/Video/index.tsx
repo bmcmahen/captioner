@@ -3,13 +3,14 @@ import { jsx } from "@emotion/core";
 import * as React from "react";
 import ReactPlayer from "react-player";
 import { Dropzone } from "./Dropzone";
-import { Embed, theme } from "sancho";
+import { Embed, theme, Navbar, Toolbar } from "sancho";
 import debug from "debug";
 
 const log = debug("app:Video");
 
 export interface VideoProps {
   url: string | null;
+  children?: React.ReactNode;
   setVideoDuration: (seconds: number) => void;
   setVideoURL: (url: string, canSave: boolean, name: string) => void;
   player: React.RefObject<ReactPlayer>;
@@ -20,6 +21,7 @@ export const Video: React.FunctionComponent<VideoProps> = ({
   setVideoURL,
   setVideoDuration,
   setCurrentTime,
+  children,
   url,
   player
 }) => {
@@ -33,19 +35,42 @@ export const Video: React.FunctionComponent<VideoProps> = ({
     }
   }, []);
 
+  const toolbar = (
+    <Toolbar
+      compressed
+      css={{
+        display: "flex",
+        flex: "0 0 auto",
+        justifyContent: "space-between",
+        borderBottom: "1px solid rgba(255,255,255,0.1)"
+      }}
+    >
+      {children}
+    </Toolbar>
+  );
+
   if (!url) {
     return (
       <div
         css={{
           width: "100%",
           height: "100%",
-          background: theme.colors.palette.gray.base,
+
           display: "flex",
-          alignItems: "center",
-          justifyContent: "center"
+          flexDirection: "column"
         }}
       >
-        <Dropzone onRequestAddURL={setVideoURL} />
+        {toolbar}
+        <div
+          css={{
+            flex: "1",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center"
+          }}
+        >
+          <Dropzone onRequestAddURL={setVideoURL} />
+        </div>
       </div>
     );
   }
@@ -68,27 +93,34 @@ export const Video: React.FunctionComponent<VideoProps> = ({
     <div
       css={{
         width: "100%",
-        height: "100%",
-        background: theme.colors.palette.gray.base,
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center"
+        height: "100%"
       }}
     >
-      <Embed width={4} height={3}>
-        <ReactPlayer
-          controls
-          width="100%"
-          ref={player}
-          style={{ display: "flex" }}
-          height="auto"
-          url={url}
-          onProgress={onProgress}
-          progressInterval={350}
-          onSeek={onSeek}
-          onDuration={onDuration}
-        />
-      </Embed>
+      {toolbar}
+      <div
+        css={{
+          display: "flex",
+          alignItems: "center",
+          flex: 1,
+          justifyContent: "center",
+          height: "calc(100% - 40px)"
+        }}
+      >
+        <Embed width={16} height={9}>
+          <ReactPlayer
+            controls
+            width="100%"
+            ref={player}
+            style={{ height: "100%", display: "flex" }}
+            height="auto"
+            url={url}
+            onProgress={onProgress}
+            progressInterval={350}
+            onSeek={onSeek}
+            onDuration={onDuration}
+          />
+        </Embed>
+      </div>
     </div>
   );
 };

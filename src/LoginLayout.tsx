@@ -64,28 +64,7 @@ export const LoginLayout: React.FunctionComponent<LoginLayoutProps> = ({
               </BreadcrumbItem>
             </Breadcrumb>
           </div>
-          {user && (
-            <Popover
-              content={
-                <MenuList>
-                  <MenuItem onSelect={signOut}>Sign out</MenuItem>
-                </MenuList>
-              }
-            >
-              <IconButton
-                variant="ghost"
-                size="sm"
-                icon={
-                  <Avatar
-                    size="sm"
-                    src={user.photoURL || undefined}
-                    name={user.displayName || user!.email || "?"}
-                  />
-                }
-                label={user.displayName || user!.email || "?"}
-              />
-            </Popover>
-          )}
+          <UserPopover />
         </Toolbar>
       </Navbar>
 
@@ -104,3 +83,34 @@ export const LoginLayout: React.FunctionComponent<LoginLayoutProps> = ({
     </React.Fragment>
   );
 };
+
+export function UserPopover() {
+  const user = useSession();
+
+  if (!user) {
+    return null;
+  }
+
+  return (
+    <Popover
+      content={
+        <MenuList>
+          <MenuItem onSelect={signOut}>Sign out</MenuItem>
+        </MenuList>
+      }
+    >
+      <IconButton
+        variant="ghost"
+        size="sm"
+        icon={
+          <Avatar
+            size="sm"
+            src={user.photoURL || undefined}
+            name={user.displayName || user!.email || "?"}
+          />
+        }
+        label={user.displayName || user!.email || "?"}
+      />
+    </Popover>
+  );
+}

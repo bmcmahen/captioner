@@ -8,7 +8,10 @@ import {
   useCollapse,
   responsiveBodyPadding,
   Alert,
-  Layer
+  Layer,
+  IconButton,
+  Text,
+  Tooltip
 } from "sancho";
 import { useDocument, useCollection } from "react-firebase-hooks/firestore";
 import firebase from "firebase/app";
@@ -123,8 +126,7 @@ export const Editor: React.FunctionComponent<EditorProps> = ({ match }) => {
   }
 
   return (
-    <Layout css={{ paddingTop: "40px" }}>
-      <EditorNav title={meta && meta.get("title")} />
+    <Layout>
       <MainEditor>
         <VideoContainer>
           <Video
@@ -133,7 +135,40 @@ export const Editor: React.FunctionComponent<EditorProps> = ({ match }) => {
             setCurrentTime={setCurrentTime}
             url={video}
             player={player}
-          />
+          >
+            <React.Fragment>
+              <div
+                css={{
+                  display: "flex",
+                  alignItems: "center"
+                }}
+              >
+                <Tooltip content="View your projects">
+                  <IconButton
+                    color="white"
+                    icon="arrow-left"
+                    label="View your projects"
+                    variant="ghost"
+                  />
+                </Tooltip>
+                {meta && (
+                  <Text
+                    variant="h6"
+                    gutter={false}
+                    css={{ marginLeft: theme.spaces.sm, color: "white" }}
+                  >
+                    {meta.get("title")}
+                  </Text>
+                )}
+              </div>
+              <IconButton
+                color="white"
+                icon="more"
+                label="More options"
+                variant="ghost"
+              />
+            </React.Fragment>
+          </Video>
         </VideoContainer>
         <CaptionsContainer>
           {meta && captions.value && (
@@ -252,5 +287,9 @@ function CaptionsContainer({ children }: { children?: React.ReactNode }) {
 }
 
 function VideoContainer({ children }: { children?: React.ReactNode }) {
-  return <div css={{ flex: "1 1 50%" }}>{children}</div>;
+  return (
+    <div css={{ background: theme.colors.palette.gray.base, flex: "1 1 50%" }}>
+      {children}
+    </div>
+  );
 }
