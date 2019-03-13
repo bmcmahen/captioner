@@ -3,7 +3,13 @@ import { jsx, css } from "@emotion/core";
 import * as React from "react";
 import { Video } from "./Video";
 import { Captions } from "./Captions";
-import { theme, useCollapse, responsiveBodyPadding, Alert } from "sancho";
+import {
+  theme,
+  useCollapse,
+  responsiveBodyPadding,
+  Alert,
+  Layer
+} from "sancho";
 import { useDocument, useCollection } from "react-firebase-hooks/firestore";
 import firebase from "firebase/app";
 import debug from "debug";
@@ -107,37 +113,41 @@ export const Editor: React.FunctionComponent<EditorProps> = ({ match }) => {
     return (
       <Layout css={responsiveBodyPadding}>
         <EditorNav loading />
-        <VideoContainer />
-        <CaptionsContainer />
+        <MainEditor>
+          <VideoContainer />
+          <CaptionsContainer />
+        </MainEditor>
         <TimelineContainer />
       </Layout>
     );
   }
 
   return (
-    <Layout css={responsiveBodyPadding}>
+    <Layout css={{ paddingTop: "40px" }}>
       <EditorNav title={meta && meta.get("title")} />
-      <VideoContainer>
-        <Video
-          setVideoDuration={setVideoDuration}
-          setVideoURL={setVideoURL}
-          setCurrentTime={setCurrentTime}
-          url={video}
-          player={player}
-        />
-      </VideoContainer>
-      <CaptionsContainer>
-        {meta && captions.value && (
-          <Captions
-            currentTime={time}
-            onRequestSeek={seekTo}
-            duration={meta.get("duration")}
-            captions={captions.value}
-            collectionReference={subcollection}
-            active={active}
+      <MainEditor>
+        <VideoContainer>
+          <Video
+            setVideoDuration={setVideoDuration}
+            setVideoURL={setVideoURL}
+            setCurrentTime={setCurrentTime}
+            url={video}
+            player={player}
           />
-        )}
-      </CaptionsContainer>
+        </VideoContainer>
+        <CaptionsContainer>
+          {meta && captions.value && (
+            <Captions
+              currentTime={time}
+              onRequestSeek={seekTo}
+              duration={meta.get("duration")}
+              captions={captions.value}
+              collectionReference={subcollection}
+              active={active}
+            />
+          )}
+        </CaptionsContainer>
+      </MainEditor>
 
       <TimelineContainer>
         {meta && meta.get("duration") && captions.value && (
@@ -164,12 +174,14 @@ function Layout({ children, ...other }: { children: React.ReactNode }) {
         overflow: hidden;
         width: 100vw;
         display: grid;
+        background-size: cover;
+        background-image: url(https://benmcmahen.com/static/blur-262a8a688a70acf945728449894ac5a8.png);
         box-sizing: border-box;
-        grid-template-columns: 25% 25% 25% 25%;
-        grid-template-rows: auto 100px;
+        // grid-template-columns: 25% 25% 25% 25%;
+        grid-template-rows: auto 125px;
         grid-template-areas:
-          "video video editor editor"
-          "timeline timeline timeline timeline";
+          "main"
+          "timeline";
       `}
       {...other}
     >
@@ -178,46 +190,67 @@ function Layout({ children, ...other }: { children: React.ReactNode }) {
   );
 }
 
+function MainEditor({ children }: { children?: React.ReactNode }) {
+  return (
+    <div
+      css={{
+        minHeight: 0,
+        padding: theme.spaces.lg,
+        paddingBottom: 0,
+        gridArea: "main"
+      }}
+    >
+      <Layer
+        css={css`
+          display: flex;
+          min-height: 0;
+          height: 100%;
+          overflow: hidden;
+          width: 100%;
+        `}
+      >
+        {children}
+      </Layer>
+    </div>
+  );
+}
+
 function TimelineContainer({ children }: { children?: React.ReactNode }) {
   return (
     <div
       css={{
-        gridArea: "timeline",
-        // background: "white",
-        // borderTop: "1px solid",
-        // borderColor: theme.colors.border.muted,
-        background: theme.colors.background.tint1
+        gridArea: "timeline"
       }}
     >
-      {children}
+      <div
+        css={{
+          padding: "24px",
+          boxSizing: "border-box",
+          height: "100%",
+          width: "100%"
+        }}
+      >
+        <Layer
+          css={{
+            borderRadius: theme.radii.lg,
+            background: theme.colors.background.tint1,
+            width: "100%",
+            position: "relative",
+            overflow: "hidden",
+            height: "100%"
+          }}
+        >
+          {children}
+        </Layer>
+      </div>
     </div>
   );
 }
 
 function CaptionsContainer({ children }: { children?: React.ReactNode }) {
-  return (
-    <div
-      css={{
-        gridArea: "editor",
-        background: "white",
-        overflow: "hidden"
-      }}
-    >
-      {" "}
-      {children}
-    </div>
-  );
+  return <div css={{ flex: "1 1 50%" }}> {children}</div>;
 }
 
 function VideoContainer({ children }: { children?: React.ReactNode }) {
-  return (
-    <div
-      css={{
-        gridArea: "video",
-        background: theme.colors.background.tint2
-      }}
-    >
-      {children}
-    </div>
-  );
+  return <div css={{ flex: "1 1 50%" }}>{children}</div>;
 }

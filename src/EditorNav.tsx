@@ -1,7 +1,7 @@
 /** @jsx jsx */
 import { jsx } from "@emotion/core";
 import * as React from "react";
-import { Navbar, Toolbar, theme, Text } from "sancho";
+import { Navbar, Toolbar, theme, Text, IconButton } from "sancho";
 
 export interface EditorNavProps {
   loading?: boolean;
@@ -13,15 +13,25 @@ export const EditorNav: React.FunctionComponent<EditorNavProps> = props => {
     <Navbar
       css={{
         boxShadow: "none",
-        background: theme.colors.background.tint1
+        background: "transparent"
       }}
     >
-      <Toolbar>
-        {props.title && (
-          <Text variant="h5" gutter={false}>
-            {props.title}
-          </Text>
-        )}
+      <Toolbar css={{ justifyContent: "space-between" }}>
+        <div css={{ display: "flex", alignItems: "center" }}>
+          <IconButton
+            css={{ color: "white", marginRight: theme.spaces.sm }}
+            icon="menu"
+            size="lg"
+            variant="ghost"
+            label="Show menu"
+          />
+          {props.title && (
+            <Text variant="h5" css={{ color: "white" }} gutter={false}>
+              {props.title}
+            </Text>
+          )}
+        </div>
+        <div css={{ width: "36px" }} />
       </Toolbar>
     </Navbar>
   );

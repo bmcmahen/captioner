@@ -11,7 +11,11 @@ import {
   theme,
   Button,
   Popover,
-  Input
+  Input,
+  IconButton,
+  Badge,
+  Icon,
+  Tooltip
 } from "sancho";
 import debug from "debug";
 import { captionFactory, CaptionOptions } from "./firebase";
@@ -130,7 +134,7 @@ export const Captions: React.FunctionComponent<CaptionsProps> = ({
       <Navbar
         css={{
           background: "white",
-          borderTop: `1px solid ${theme.colors.border.default}`,
+          // borderTop: `1px solid ${theme.colors.border.default}`,
           flex: "0 0 auto",
           borderBottom: `1px solid ${theme.colors.border.muted}`
         }}
@@ -164,33 +168,51 @@ export const Captions: React.FunctionComponent<CaptionsProps> = ({
               </div>
             }
           >
-            <Button
-              css={{ marginLeft: "-1.4rem", paddingLeft: "0.9rem" }}
-              size="sm"
-              variant="ghost"
-            >
-              Caption Duration: {initialCaptionDuration}s
+            <Button size="sm" variant="outline">
+              Caption length: {initialCaptionDuration}s
+              <Icon
+                icon="chevron-down"
+                color={"currentColor"}
+                css={{ marginLeft: theme.spaces.sm }}
+              />
             </Button>
           </Popover>
-          <form>
-            <Check
-              onChange={() => setLooping(isLooping ? "false" : "enabled")}
-              checked={isLooping}
-              label="Loop video"
+          <div css={{ display: "flex", alignItems: "center" }}>
+            <Tooltip content="Toggle looping">
+              <IconButton
+                size="md"
+                variant="ghost"
+                icon="repeat"
+                onClick={() => setLooping(isLooping ? "false" : "enabled")}
+                style={{
+                  color: isLooping
+                    ? theme.colors.text.selected
+                    : theme.colors.text.muted
+                }}
+                label="Repeat"
+              />
+            </Tooltip>
+
+            <div
               css={{
-                "& span": {
-                  fontSize: theme.sizes[0]
-                }
+                width: "1px",
+                height: "14px",
+                margin: `0 ${theme.spaces.md}`,
+                background: theme.colors.background.tint2
               }}
             />
-          </form>
+            <Button size="sm" intent="primary" onClick={() => {}}>
+              Export SRT
+            </Button>
+          </div>
         </Toolbar>
       </Navbar>
       <div
         css={{
           flex: 1,
           overflowY: "scroll",
-          WebkitOverflowScrolling: "touch"
+          WebkitOverflowScrolling: "touch",
+          borderBottomRightRadius: theme.radii.lg
         }}
       >
         {captions.docs.map((caption, i) => {

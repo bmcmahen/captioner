@@ -58,7 +58,18 @@ export const Dropzone: React.FunctionComponent<DropzoneProps> = ({
       <VisuallyHidden>
         <input onChange={onFileChange} type="file" ref={fileRef} />
       </VisuallyHidden>
-      <Button onClick={onSelectFileClick}>Select a video...</Button>
+      <div>
+        <Button
+          variant="ghost"
+          css={{
+            color: "white",
+            border: "2px dashed rgba(255,255,255,0.6)"
+          }}
+          onClick={onSelectFileClick}
+        >
+          Select a video...
+        </Button>
+      </div>
     </div>
   );
 };

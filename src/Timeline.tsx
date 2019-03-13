@@ -2,7 +2,7 @@
 import { jsx } from "@emotion/core";
 import * as React from "react";
 import throttle from "lodash.throttle";
-import { theme, Tooltip } from "sancho";
+import { theme, Tooltip, Layer } from "sancho";
 import { useTransition, animated, useSpring, config } from "react-spring";
 import map from "./interpolate-color";
 import formatDuration from "format-duration";
@@ -43,10 +43,10 @@ export const Timeline: React.FunctionComponent<TimelineProps> = ({
 
   const container = React.useRef<HTMLDivElement>(null);
   const width = linearConversion([0, duration], [0, rect ? rect.width : 0]);
-  const height = linearConversion([0, 5], [40, 100]);
+  const height = linearConversion([0, 5], [10, 100]);
 
   const cap = (num: number) => {
-    if (num > 100) return 90;
+    if (num > 100) return 80;
     return num;
   };
 
@@ -68,9 +68,10 @@ export const Timeline: React.FunctionComponent<TimelineProps> = ({
   }
 
   const transitions = useTransition(captions.docs, item => item.id, {
-    from: { opacity: 0 },
-    enter: { opacity: 1 },
-    leave: { opacity: 0 }
+    from: { transform: "translateY(100%)" },
+    enter: { transform: "translateY(0)" },
+    leave: { transform: "translateY(100%)" },
+    trail: 30
   });
 
   const spring = useSpring({
@@ -90,7 +91,7 @@ export const Timeline: React.FunctionComponent<TimelineProps> = ({
   }
 
   function getRelativeClickPosition(e: React.MouseEvent) {
-    const left = e.clientX - 16;
+    const left = e.clientX - 24;
     const w = rect!.width;
     return (left / w) * duration;
   }
@@ -103,126 +104,102 @@ export const Timeline: React.FunctionComponent<TimelineProps> = ({
     <div
       ref={container}
       css={{
-        padding: "16px",
-        boxSizing: "border-box",
         height: "100%",
         width: "100%"
       }}
     >
-      <div
-        css={{
-          borderRadius: theme.radii.lg,
-          background: theme.colors.palette.gray.light,
-          width: "100%",
-          position: "relative",
-          overflow: "hidden",
-          height: "100%",
-          ":after": {
-            position: "absolute",
-            top: 0,
-            right: 0,
-            bottom: 0,
-            left: 0,
-            borderRadius: theme.radii.lg,
-            boxShadow: "inset 0 0 5px #0000001f",
-            content: '""',
-            pointerEvents: "none"
-          }
-        }}
-      >
-        {container.current && (
-          <svg
-            shapeRendering="crispEdges"
-            onMouseEnter={() => setHover(true)}
-            onMouseLeave={() => setHover(false)}
-            onClick={skipToPoint}
-            onMouseMove={onMouseMove}
-            css={{
-              height: "100%",
-              position: "relative",
-              width: "100%",
-              transition: "height 0.25s ease, fill 0.25s ease"
-            }}
-          >
-            {/* current time indicator */}
-            <animated.rect
-              x={0}
-              y={0}
-              height={100}
-              style={spring}
-              fill="#c0c8d0"
-            />
+      {container.current && (
+        <svg
+          shapeRendering="crispEdges"
+          onMouseEnter={() => setHover(true)}
+          onMouseLeave={() => setHover(false)}
+          onClick={skipToPoint}
+          onMouseMove={onMouseMove}
+          css={{
+            height: "100%",
+            position: "relative",
+            width: "100%",
+            transition: "height 0.25s ease, fill 0.25s ease"
+          }}
+        >
+          {/* current time indicator */}
+          <animated.rect
+            x={0}
+            y={0}
+            height={100}
+            style={spring}
+            fill="#cfd2ef73"
+          />
 
-            {/* click to skip hover indicator */}
-            {mouse && (
-              <g
-                aria-hidden={!hover}
+          {/* click to skip hover indicator */}
+          {mouse && (
+            <g
+              aria-hidden={!hover}
+              style={{
+                opacity: hover ? 1 : 0,
+                transition: "opacity 0.2s ease"
+              }}
+            >
+              <animated.rect
+                x={width(mouse)}
+                height={100}
+                y={0}
+                width={3}
+                fill={"#cfd2ef73"}
+              />
+              <animated.text
                 style={{
-                  opacity: hover ? 1 : 0,
-                  transition: "opacity 0.2s ease"
+                  cursor: "default",
+                  color: "white",
+                  fontWeight: "bold",
+                  fontFamily: "helvetica, sans-serif",
+                  fontSize: "0.7rem"
                 }}
+                y={16}
+                fill="rgba(0,0,0,0.5)"
+                x={width(mouse) + 10}
               >
-                <animated.rect
-                  x={width(mouse)}
-                  height={100}
-                  y={0}
-                  width={3}
-                  fill="rgba(255,255,255,0.2)"
-                />
-                <animated.text
-                  style={{
-                    cursor: "default",
-                    color: "white",
-                    fontWeight: "bold",
-                    fontFamily: "helvetica, sans-serif",
-                    fontSize: "0.7rem"
-                  }}
-                  y={16}
-                  fill="rgba(255,255,255,0.5)"
-                  x={width(mouse) + 10}
-                >
-                  {formatDuration(mouse * 1000)}
-                </animated.text>
-              </g>
-            )}
+                {formatDuration(mouse * 1000)}
+              </animated.text>
+            </g>
+          )}
 
-            {/* captions */}
-            {transitions.map(({ item, key, props }, i) => {
-              return (
-                <Tooltip key={key} content={item.get("content")}>
-                  <animated.rect
-                    data-caption
-                    onClick={e => {
-                      e.stopPropagation();
-                      onRequestSkip(i);
-                    }}
-                    style={props}
-                    css={{
-                      transition: "height 0.2s ease",
-                      cursor: "pointer",
-                      ":hover": {
-                        fill: color(getColor(wpm(item), false))
-                          .lighten(0.2)
-                          .toString()
-                      }
-                    }}
-                    key={key}
-                    x={width(item.get("startTime"))}
-                    y={100 - cap(height(wpm(item)))}
-                    fill={getColor(wpm(item), false)}
-                    width={
-                      width(item.get("endTime")) -
-                      width(item.get("startTime")) +
-                      0.3
+          {/* captions */}
+          {transitions.map(({ item, key, props }, i) => {
+            return (
+              <Tooltip key={key} content={item.get("content")}>
+                <animated.rect
+                  data-caption
+                  onClick={e => {
+                    e.stopPropagation();
+                    onRequestSkip(i);
+                  }}
+                  style={props}
+                  css={{
+                    transition: "height 0.2s ease",
+                    cursor: "pointer",
+                    ":hover": {
+                      fill: color(getColor(wpm(item), false))
+                        .lighten(0.2)
+                        .toString()
                     }
-                    height={cap(height(wpm(item)))}
-                  />
-                </Tooltip>
-              );
-            })}
-          </svg>
-        )}
-      </div>
+                  }}
+                  key={key}
+                  x={width(item.get("startTime"))}
+                  y={77 - cap(height(wpm(item)))}
+                  fill={getColor(wpm(item), false)}
+                  width={
+                    width(item.get("endTime")) -
+                    width(item.get("startTime")) +
+                    0.3
+                  }
+                  height={cap(height(wpm(item)))}
+                />
+              </Tooltip>
+            );
+          })}
+        </svg>
+      )}
     </div>
   );
 };
