@@ -144,40 +144,50 @@ export const Captions: React.FunctionComponent<CaptionsProps> = ({
           css={{ display: "flex", justifyContent: "space-between" }}
           compressed
         >
-          <Popover
-            content={
-              <div css={{ maxWidth: "300px", padding: theme.spaces.lg }}>
-                <form onSubmit={e => e.preventDefault()}>
-                  <InputGroup
-                    label="Default caption duration (seconds)"
-                    helpText="This specifies the default caption duration (in seconds) on newly created captions."
-                  >
-                    <Input
-                      type="number"
-                      value={captionDuration}
-                      step={1}
-                      autoFocus
-                      min={1}
-                      max={30}
-                      onChange={e => {
-                        setCaptionDuration(e.target.value);
-                      }}
-                    />
-                  </InputGroup>
-                </form>
-              </div>
-            }
-          >
-            <Button size="sm" variant="outline">
-              Caption length: {initialCaptionDuration}s
-              <Icon
-                icon="chevron-down"
-                color={"currentColor"}
-                css={{ marginLeft: theme.spaces.sm }}
-              />
-            </Button>
-          </Popover>
+          <div />
           <div css={{ display: "flex", alignItems: "center" }}>
+            <Popover
+              content={
+                <div css={{ maxWidth: "300px", padding: theme.spaces.lg }}>
+                  <form onSubmit={e => e.preventDefault()}>
+                    <InputGroup
+                      label="Default caption duration (seconds)"
+                      helpText="This specifies the default caption duration (in seconds) on newly created captions."
+                    >
+                      <Input
+                        type="number"
+                        value={captionDuration}
+                        step={1}
+                        autoFocus
+                        min={1}
+                        max={30}
+                        onChange={e => {
+                          setCaptionDuration(e.target.value);
+                        }}
+                      />
+                    </InputGroup>
+                  </form>
+                </div>
+              }
+            >
+              <Button
+                css={{
+                  paddingRight: theme.spaces.xs,
+                  paddingLeft: theme.spaces.xs,
+                  alignItems: "center"
+                }}
+                size="sm"
+                variant="ghost"
+              >
+                {initialCaptionDuration}s
+                <Icon
+                  icon="chevron-down"
+                  size="sm"
+                  color={theme.colors.text.muted}
+                  css={{ marginLeft: theme.spaces.xs }}
+                />
+              </Button>
+            </Popover>
             <Tooltip content="Show shortcuts">
               <IconButton
                 size="md"

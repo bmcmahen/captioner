@@ -112,66 +112,55 @@ export const Editor: React.FunctionComponent<EditorProps> = ({ match }) => {
     return <div>Alert</div>;
   }
 
-  if (loading) {
-    return (
-      <Layout css={responsiveBodyPadding}>
-        <EditorNav loading />
-        <MainEditor>
-          <VideoContainer />
-          <CaptionsContainer />
-        </MainEditor>
-        <TimelineContainer />
-      </Layout>
-    );
-  }
-
   return (
     <Layout>
       <MainEditor>
         <VideoContainer>
-          <Video
-            setVideoDuration={setVideoDuration}
-            setVideoURL={setVideoURL}
-            setCurrentTime={setCurrentTime}
-            url={video}
-            player={player}
-          >
-            <React.Fragment>
-              <div
-                css={{
-                  display: "flex",
-                  alignItems: "center"
-                }}
-              >
-                <Tooltip content="View your projects">
-                  <IconButton
-                    color="white"
-                    icon="arrow-left"
-                    label="View your projects"
-                    variant="ghost"
-                  />
-                </Tooltip>
-                {meta && (
-                  <Text
-                    variant="h6"
-                    gutter={false}
-                    css={{ marginLeft: theme.spaces.sm, color: "white" }}
-                  >
-                    {meta.get("title")}
-                  </Text>
-                )}
-              </div>
-              <IconButton
-                color="white"
-                icon="more"
-                label="More options"
-                variant="ghost"
-              />
-            </React.Fragment>
-          </Video>
+          {!loading && (
+            <Video
+              setVideoDuration={setVideoDuration}
+              setVideoURL={setVideoURL}
+              setCurrentTime={setCurrentTime}
+              url={video}
+              player={player}
+            >
+              <React.Fragment>
+                <div
+                  css={{
+                    display: "flex",
+                    alignItems: "center"
+                  }}
+                >
+                  <Tooltip content="View your projects">
+                    <IconButton
+                      color="white"
+                      icon="arrow-left"
+                      label="View your projects"
+                      variant="ghost"
+                    />
+                  </Tooltip>
+                  {meta && (
+                    <Text
+                      variant="h6"
+                      gutter={false}
+                      css={{ marginLeft: theme.spaces.sm, color: "white" }}
+                    >
+                      {meta.get("title")}
+                    </Text>
+                  )}
+                </div>
+                <IconButton
+                  color="white"
+                  icon="more"
+                  label="More options"
+                  variant="ghost"
+                />
+              </React.Fragment>
+            </Video>
+          )}
         </VideoContainer>
         <CaptionsContainer>
-          {meta && captions.value && (
+          {!loading && meta && captions.value && (
             <Captions
               currentTime={time}
               onRequestSeek={seekTo}
@@ -185,7 +174,7 @@ export const Editor: React.FunctionComponent<EditorProps> = ({ match }) => {
       </MainEditor>
 
       <TimelineContainer>
-        {meta && meta.get("duration") && captions.value && (
+        {!loading && meta && meta.get("duration") && captions.value && (
           <Timeline
             captions={captions.value}
             currentTime={time}
