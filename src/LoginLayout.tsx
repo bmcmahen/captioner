@@ -1,72 +1,41 @@
 /** @jsx jsx */
 import { jsx, Global } from "@emotion/core";
 import * as React from "react";
-import { Link as RouterLink } from "react-router-dom";
 import {
   theme,
   responsiveBodyPadding,
-  Navbar,
-  Toolbar,
-  Breadcrumb,
-  BreadcrumbItem,
-  Link,
   Avatar,
   IconButton,
   Popover,
   MenuList,
-  MenuItem,
-  Text,
-  Button
+  MenuItem
 } from "sancho";
 import { useSession, signOut } from "./auth";
+import { AnonNav } from "./Branding";
+import Helmet from "react-helmet";
 
 export interface LoginLayoutProps {
   children?: React.ReactNode;
   title: string;
+  showLogin?: boolean;
 }
 
 export const LoginLayout: React.FunctionComponent<LoginLayoutProps> = ({
   children,
-  title
+  title,
+  showLogin
 }) => {
   const user = useSession();
+
   return (
     <React.Fragment>
+      <Helmet title={title} />
       <Global
         styles={{
-          body: {
-            backgroundAttachment: "fixed",
-            backgroundColor: theme.colors.background.tint1
-          }
+          body: {}
         }}
       />
-      <Navbar css={{ background: "white" }}>
-        <Toolbar css={{ justifyContent: "space-between" }}>
-          <div css={{ display: "flex", alignItems: "center" }}>
-            <Breadcrumb
-              css={{
-                // background: theme.colors.background.tint1
-                marginLeft: theme.spaces.md,
-                background: theme.colors.background.tint1
-              }}
-            >
-              <BreadcrumbItem>
-                <Text variant="body">
-                  <Link component={RouterLink} to="/">
-                    Home
-                  </Link>
-                </Text>
-              </BreadcrumbItem>
-              <BreadcrumbItem>
-                <Text variant="body" muted>
-                  {title}
-                </Text>
-              </BreadcrumbItem>
-            </Breadcrumb>
-          </div>
-          <UserPopover />
-        </Toolbar>
-      </Navbar>
+      <AnonNav showLogin={showLogin} showDashboard={false} user={user} />
 
       <div
         css={[

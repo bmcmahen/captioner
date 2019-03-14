@@ -6,21 +6,21 @@ import {
   Text,
   Toolbar,
   InputGroup,
-  Check,
   Navbar,
   theme,
   Button,
   Popover,
   Input,
   IconButton,
-  Badge,
   Icon,
-  Tooltip
+  Tooltip,
+  Modal
 } from "sancho";
 import debug from "debug";
 import { captionFactory, CaptionOptions } from "./firebase";
 import formatDuration from "format-duration";
 import useLocalStorage from "react-use-localstorage";
+import { useSpring, animated } from "react-spring";
 
 const log = debug("app:Captions");
 
@@ -49,6 +49,7 @@ export const Captions: React.FunctionComponent<CaptionsProps> = ({
   onRequestSeek
 }) => {
   const [focus, setFocus] = React.useState(active);
+  const [showHelp, setShowHelp] = React.useState(false);
   const [activeItem, setActiveItem] = React.useState(active);
   const [looping, setLooping] = useLocalStorage("looping", "enabled");
   const [captionDuration, setCaptionDuration] = useLocalStorage(
@@ -122,8 +123,14 @@ export const Captions: React.FunctionComponent<CaptionsProps> = ({
     collectionReference.add(captionFactory(options));
   }
 
+  const animation = useSpring({
+    from: { opacity: 0 },
+    opacity: 1
+  });
+
   return (
-    <div
+    <animated.div
+      style={animation}
       css={{
         width: "100%",
         height: "100%",
@@ -188,14 +195,83 @@ export const Captions: React.FunctionComponent<CaptionsProps> = ({
                 />
               </Button>
             </Popover>
+
             <Tooltip content="Show shortcuts">
               <IconButton
                 size="md"
                 variant="ghost"
+                onClick={() => setShowHelp(true)}
                 icon="help"
                 label="Show shortcuts"
               />
             </Tooltip>
+
+            <Modal
+              title="Shortcuts"
+              isOpen={showHelp}
+              onRequestClose={() => setShowHelp(false)}
+              css={{
+                "& .Modal__header": {
+                  background: theme.colors.background.tint1,
+                  borderTopRightRadius: theme.radii.lg,
+                  borderTopLeftRadius: theme.radii.lg,
+                  paddingBottom: theme.spaces.md
+                }
+              }}
+            >
+              <Text
+                component="div"
+                css={{
+                  display: "block",
+                  padding: theme.spaces.lg
+                }}
+              >
+                <dl
+                  css={{
+                    margin: 0,
+                    padding: 0,
+                    "& > div": {
+                      display: "flex"
+                    },
+                    "& > div > dt": {
+                      fontWeight: "bold",
+                      flex: "0 0 100px"
+                    }
+                  }}
+                >
+                  <div>
+                    <dt>Cmd P</dt> <dd>Increment the caption end time.</dd>
+                  </div>
+                  <div>
+                    <dt>Cmd O</dt> <dd>Decrement the caption end time.</dd>
+                  </div>
+                  <div>
+                    <dt>Cmd I</dt> <dd>Increment the caption start time.</dd>
+                  </div>
+                  <div>
+                    <dt>Cmd U</dt> <dd>Decrement the caption start time.</dd>
+                  </div>
+                  <div>
+                    <dt>Cmd Enter</dt>{" "}
+                    <dd>Create a new line in the same caption.</dd>
+                  </div>
+                  <div>
+                    <dt>Enter</dt>
+
+                    <dd>
+                      Create a new caption directly after the current caption.
+                    </dd>
+                  </div>
+                  <div>
+                    <dt>Delete</dt>
+                    <dd>
+                      If the caption is empty, delete it and return to the
+                      previous caption.
+                    </dd>
+                  </div>
+                </dl>
+              </Text>
+            </Modal>
             <Tooltip content="Toggle looping">
               <IconButton
                 size="md"
@@ -335,7 +411,7 @@ export const Captions: React.FunctionComponent<CaptionsProps> = ({
           );
         })}
       </div>
-    </div>
+    </animated.div>
   );
 };
 

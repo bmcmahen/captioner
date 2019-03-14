@@ -11,12 +11,15 @@ import {
   Container,
   NegativeMarginsContainer,
   Divider,
-  Icon
+  Icon,
+  Popover,
+  MenuList,
+  MenuItem
 } from "sancho";
 import { Link } from "react-router-dom";
 import { Browser } from "./Browser";
 import Helmet from "react-helmet";
-import { useSession } from "./auth";
+import { useSession, signOut } from "./auth";
 
 export interface BrandingProps {}
 
@@ -188,7 +191,15 @@ const Column = ({ title, content }: { title: string; content: string }) => {
   );
 };
 
-export const AnonNav = ({ user }: { user?: firebase.User }) => (
+export const AnonNav = ({
+  user,
+  showDashboard = true,
+  showLogin = true
+}: {
+  showDashboard?: boolean;
+  user?: firebase.User;
+  showLogin?: boolean;
+}) => (
   <Navbar
     css={{
       boxShadow: "none",
@@ -205,34 +216,78 @@ export const AnonNav = ({ user }: { user?: firebase.User }) => (
       </Link>
       <div css={{ flex: 1 }} />
       {user ? (
-        <Button variant="ghost" intent="primary" component={Link} to="/me">
-          My Dashboard{" "}
-          <Icon
-            color={theme.colors.palette.blue.base}
-            css={{ marginLeft: theme.spaces.md, color: "white" }}
-            icon="arrow-right"
-          />
-        </Button>
+        <React.Fragment>
+          <Popover
+            content={
+              <MenuList>
+                <MenuItem onSelect={signOut}>Sign out...</MenuItem>
+              </MenuList>
+            }
+          >
+            <Button
+              css={{ marginLeft: theme.spaces.xs }}
+              intent="primary"
+              variant="ghost"
+            >
+              {user.displayName || user.email}
+              <Icon
+                color={theme.colors.palette.blue.base}
+                css={{ marginLeft: theme.spaces.sm, color: "white" }}
+                icon="chevron-down"
+              />
+            </Button>
+          </Popover>
+
+          {showDashboard && (
+            <>
+              <div
+                css={{
+                  width: "1px",
+                  height: "16px",
+                  background: "rgba(0,0,0,0.2)",
+                  margin: `0 ${theme.spaces.xs}`
+                }}
+              />
+              <Button
+                variant="ghost"
+                intent="primary"
+                component={Link}
+                to="/me"
+              >
+                My Projects{" "}
+                <Icon
+                  color={theme.colors.palette.blue.base}
+                  css={{ marginLeft: theme.spaces.md, color: "white" }}
+                  icon="arrow-right"
+                />
+              </Button>
+            </>
+          )}
+        </React.Fragment>
       ) : (
         <React.Fragment>
-          <Button
-            component={Link}
-            to="/login?register=true"
-            variant="ghost"
-            intent="primary"
-            css={{
-              display: "none",
-              [theme.breakpoints.md]: {
-                display: "block"
-              },
-              marginRight: theme.spaces.md
-            }}
-          >
-            Register
-          </Button>
-          <Button intent="primary" component={Link} to="/login">
-            Login
-          </Button>
+          {showLogin && (
+            <>
+              <Button
+                component={Link}
+                to="/login?register=true"
+                variant="ghost"
+                intent="primary"
+                css={{
+                  display: "none",
+                  [theme.breakpoints.md]: {
+                    display: "block"
+                  },
+                  marginRight: theme.spaces.md
+                }}
+              >
+                Register
+              </Button>
+              <Button intent="primary" component={Link} to="/login">
+                Login
+              </Button>
+            </>
+          )}
         </React.Fragment>
       )}
     </Toolbar>

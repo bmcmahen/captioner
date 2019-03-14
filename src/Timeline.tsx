@@ -51,11 +51,17 @@ export const Timeline: React.FunctionComponent<TimelineProps> = ({
   };
 
   const onResize = throttle(() => {
-    setRect(container.current!.getBoundingClientRect());
+    if (!container.current) {
+      return;
+    }
+    setRect(container.current.getBoundingClientRect());
   }, 100);
 
   React.useEffect(() => {
-    setRect(container.current!.getBoundingClientRect());
+    if (!container.current) {
+      return;
+    }
+    setRect(container.current.getBoundingClientRect());
     window.addEventListener("resize", onResize);
     return () => window.removeEventListener("reize", onResize);
   }, []);

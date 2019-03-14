@@ -7,16 +7,10 @@ import {
   Layer,
   Text,
   Button,
-  Divider,
   Input,
   InputGroup,
   Icon,
   Link,
-  responsiveBodyPadding,
-  Navbar,
-  Toolbar,
-  Breadcrumb,
-  BreadcrumbItem,
   LayerLoading,
   Alert
 } from "sancho";
@@ -85,10 +79,13 @@ export const Login: React.FunctionComponent<LoginProps> = props => {
   }
 
   return (
-    <LoginLayout title={isRegistering ? "Register" : "Sign in"}>
+    <LoginLayout
+      showLogin={false}
+      title={isRegistering ? "Register" : "Sign in"}
+    >
       <Layer
         css={{
-          marginTop: theme.spaces.xl,
+          marginTop: theme.spaces.sm,
           marginBottom: theme.spaces.lg,
           maxWidth: "450px",
           background: theme.colors.background.tint1,

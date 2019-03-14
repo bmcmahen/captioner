@@ -5,29 +5,33 @@ import { Video } from "./Video";
 import { Captions } from "./Captions";
 import {
   theme,
-  useCollapse,
-  responsiveBodyPadding,
-  Alert,
   Layer,
   IconButton,
   Text,
-  Tooltip
+  Tooltip,
+  Popover,
+  MenuList,
+  MenuItem
 } from "sancho";
 import { useDocument, useCollection } from "react-firebase-hooks/firestore";
 import firebase from "firebase/app";
 import debug from "debug";
-import { EditorNav } from "./EditorNav";
 import ReactPlayer from "react-player";
 import { Timeline } from "./Timeline";
 import { RouteChildrenProps } from "react-router";
+import { animated, useTrail } from "react-spring";
 
 const log = debug("app:Editor");
 
 export interface EditorProps extends RouteChildrenProps<any> {}
 
-export const Editor: React.FunctionComponent<EditorProps> = ({ match }) => {
+export const Editor: React.FunctionComponent<EditorProps> = ({
+  match,
+  history
+}) => {
   const { id } = match && match.params;
   const [active, setActive] = React.useState<number | null>(0);
+  const [renderMain, setRenderMain] = React.useState(false);
 
   // load the document containing meta about the project
   const { error, loading, value: meta } = useDocument(
@@ -62,7 +66,7 @@ export const Editor: React.FunctionComponent<EditorProps> = ({ match }) => {
   }, [meta]);
 
   // set the video URL and save to firebase
-  function setVideoURL(url: string, canSave: boolean, name: string) {
+  function setVideoURL(url: string, canSave: boolean, name?: string) {
     setVideo(url);
 
     // we can't save huge object urls to firebase
@@ -74,6 +78,16 @@ export const Editor: React.FunctionComponent<EditorProps> = ({ match }) => {
     // save the video name to firebase if different
     if (meta && meta.get("title") !== name) {
       meta.ref.set({ title: name }, { merge: true });
+    }
+  }
+
+  function onRemoveVideo() {
+    setVideo("");
+    if (meta) {
+      meta.ref.update({
+        url: firebase.firestore.FieldValue.delete(),
+        title: "Untitled document"
+      });
     }
   }
 
@@ -113,9 +127,16 @@ export const Editor: React.FunctionComponent<EditorProps> = ({ match }) => {
     return <div>Alert</div>;
   }
 
+  const trail = useTrail(2, {
+    from: { opacity: 0, y: 3 },
+    opacity: 1,
+    y: 0,
+    onRest: () => setRenderMain(true)
+  });
+
   return (
     <Layout>
-      <MainEditor>
+      <MainEditor animation={trail[0]}>
         <VideoContainer>
           {!loading && (
             <Video
@@ -134,7 +155,14 @@ export const Editor: React.FunctionComponent<EditorProps> = ({ match }) => {
                 >
                   <Tooltip content="View your projects">
                     <IconButton
+                      component="a" // tooltip not working with ReactRouterLink
+                      href="/me"
+                      onClick={e => {
+                        e.preventDefault();
+                        history.push("/me");
+                      }}
                       color="white"
+                      css={{ display: "inline-block" }}
                       icon="arrow-left"
                       label="View your projects"
                       variant="ghost"
@@ -150,18 +178,31 @@ export const Editor: React.FunctionComponent<EditorProps> = ({ match }) => {
                     </Text>
                   )}
                 </div>
-                <IconButton
-                  color="white"
-                  icon="more"
-                  label="More options"
-                  variant="ghost"
-                />
+                {video && (
+                  <Popover
+                    content={
+                      <MenuList>
+                        <MenuItem onSelect={onRemoveVideo}>
+                          Remove Current Video
+                        </MenuItem>
+                      </MenuList>
+                    }
+                  >
+                    <IconButton
+                      color="white"
+                      icon="more"
+                      disabled={!video}
+                      label="More options"
+                      variant="ghost"
+                    />
+                  </Popover>
+                )}
               </React.Fragment>
             </Video>
           )}
         </VideoContainer>
         <CaptionsContainer>
-          {!loading && meta && captions.value && (
+          {!loading && meta && captions.value && renderMain && (
             <Captions
               currentTime={time}
               onRequestSeek={seekTo}
@@ -174,7 +215,7 @@ export const Editor: React.FunctionComponent<EditorProps> = ({ match }) => {
         </CaptionsContainer>
       </MainEditor>
 
-      <TimelineContainer>
+      <TimelineContainer animation={trail[1]}>
         {!loading && meta && meta.get("duration") && captions.value && (
           <Timeline
             captions={captions.value}
@@ -199,10 +240,8 @@ function Layout({ children, ...other }: { children: React.ReactNode }) {
         overflow: hidden;
         width: 100vw;
         display: grid;
-        background-size: cover;
-        background-image: url(https://benmcmahen.com/static/blur-262a8a688a70acf945728449894ac5a8.png);
+
         box-sizing: border-box;
-        // grid-template-columns: 25% 25% 25% 25%;
         grid-template-rows: auto 125px;
         grid-template-areas:
           "main"
@@ -215,9 +254,19 @@ function Layout({ children, ...other }: { children: React.ReactNode }) {
   );
 }
 
-function MainEditor({ children }: { children?: React.ReactNode }) {
+function MainEditor({
+  children,
+  animation
+}: {
+  animation: any;
+  children?: React.ReactNode;
+}) {
   return (
-    <div
+    <animated.div
+      style={{
+        opacity: animation.opacity,
+        transform: animation.y.interpolate((y: number) => `translateY(${-y}%)`)
+      }}
       css={{
         minHeight: 0,
         padding: theme.spaces.lg,
@@ -236,13 +285,23 @@ function MainEditor({ children }: { children?: React.ReactNode }) {
       >
         {children}
       </Layer>
-    </div>
+    </animated.div>
   );
 }
 
-function TimelineContainer({ children }: { children?: React.ReactNode }) {
+function TimelineContainer({
+  animation,
+  children
+}: {
+  animation: any;
+  children?: React.ReactNode;
+}) {
   return (
-    <div
+    <animated.div
+      style={{
+        opacity: animation.opacity,
+        transform: animation.y.interpolate((y: number) => `translateY(${y}%)`)
+      }}
       css={{
         gridArea: "timeline"
       }}
@@ -268,12 +327,12 @@ function TimelineContainer({ children }: { children?: React.ReactNode }) {
           {children}
         </Layer>
       </div>
-    </div>
+    </animated.div>
   );
 }
 
 function CaptionsContainer({ children }: { children?: React.ReactNode }) {
-  return <div css={{ flex: "0 0 550px" }}> {children}</div>;
+  return <div css={{ flex: "0 0 500px" }}> {children}</div>;
 }
 
 function VideoContainer({ children }: { children?: React.ReactNode }) {

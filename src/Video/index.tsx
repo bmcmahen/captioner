@@ -103,7 +103,7 @@ export const Video: React.FunctionComponent<VideoProps> = ({
           alignItems: "center",
           flex: 1,
           justifyContent: "center",
-          height: "calc(100% - 40px)"
+          height: "calc(100% - 49px)"
         }}
       >
         <Embed width={16} height={9}>
