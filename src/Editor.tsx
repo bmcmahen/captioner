@@ -1,5 +1,5 @@
 /** @jsx jsx */
-import { jsx, css } from "@emotion/core";
+import { jsx, css, Global } from "@emotion/core";
 import * as React from "react";
 import { Video } from "./Video";
 import { Captions } from "./Captions";
@@ -234,23 +234,34 @@ export const Editor: React.FunctionComponent<EditorProps> = ({
 
 function Layout({ children, ...other }: { children: React.ReactNode }) {
   return (
-    <div
-      css={css`
-        height: 100vh;
-        overflow: hidden;
-        width: 100vw;
-        display: grid;
+    <>
+      <Global
+        styles={{
+          body: {
+            backgroundImage: `url(${require("./backgrounds/green.jpg")})`,
+            backgroundSize: "cover"
+            // backgroundColor: theme.colors.palette.teal.dark
+          }
+        }}
+      />
+      <div
+        css={css`
+          height: 100vh;
+          overflow: hidden;
+          width: 100vw;
+          display: grid;
 
-        box-sizing: border-box;
-        grid-template-rows: auto 125px;
-        grid-template-areas:
-          "main"
-          "timeline";
-      `}
-      {...other}
-    >
-      {children}
-    </div>
+          box-sizing: border-box;
+          grid-template-rows: auto 125px;
+          grid-template-areas:
+            "main"
+            "timeline";
+        `}
+        {...other}
+      >
+        {children}
+      </div>
+    </>
   );
 }
 

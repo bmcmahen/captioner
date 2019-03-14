@@ -8,11 +8,14 @@ import {
   IconButton,
   Popover,
   MenuList,
-  MenuItem
+  MenuItem,
+  Toolbar,
+  Tooltip
 } from "sancho";
 import { useSession, signOut } from "./auth";
 import { AnonNav } from "./Branding";
 import Helmet from "react-helmet";
+import useRouter from "use-react-router";
 
 export interface LoginLayoutProps {
   children?: React.ReactNode;
@@ -22,20 +25,52 @@ export interface LoginLayoutProps {
 
 export const LoginLayout: React.FunctionComponent<LoginLayoutProps> = ({
   children,
-  title,
-  showLogin
+  title
 }) => {
-  const user = useSession();
+  const router = useRouter();
+
+  const goHome = React.useCallback(
+    e => {
+      e.preventDefault();
+      router.history.push("/");
+    },
+    [router]
+  );
 
   return (
     <React.Fragment>
       <Helmet title={title} />
       <Global
         styles={{
-          body: {}
+          body: {
+            backgroundImage: `url(${require("./backgrounds/green.jpg")})`,
+            backgroundSize: "cover"
+          }
         }}
       />
-      <AnonNav showLogin={showLogin} showDashboard={false} user={user} />
+
+      <Toolbar
+        css={{
+          display: "flex",
+          position: "fixed",
+          top: 0,
+          left: 0
+        }}
+      >
+        <Tooltip placement="right" content="Go home">
+          <IconButton
+            label="home"
+            component="a"
+            onClick={goHome}
+            href="/"
+            size="lg"
+            variant="ghost"
+            icon="arrow-left"
+            color="white"
+          />
+        </Tooltip>
+        <UserPopover />
+      </Toolbar>
 
       <div
         css={[
@@ -43,8 +78,7 @@ export const LoginLayout: React.FunctionComponent<LoginLayoutProps> = ({
             display: "flex",
             alignItems: "center",
             flexDirection: "column"
-          },
-          responsiveBodyPadding
+          }
         ]}
       >
         {children}
@@ -61,25 +95,38 @@ export function UserPopover() {
   }
 
   return (
-    <Popover
-      content={
-        <MenuList>
-          <MenuItem onSelect={signOut}>Sign out</MenuItem>
-        </MenuList>
-      }
-    >
-      <IconButton
-        variant="ghost"
-        size="sm"
-        icon={
-          <Avatar
-            size="sm"
-            src={user.photoURL || undefined}
-            name={user.displayName || user!.email || "?"}
-          />
-        }
-        label={user.displayName || user!.email || "?"}
+    <div css={{ display: "flex", alignItems: "center" }}>
+      <div
+        css={{
+          width: "2px",
+          height: "18px",
+          margin: `0 ${theme.spaces.sm}`,
+          background: "rgba(255,255,255,0.3)"
+        }}
       />
-    </Popover>
+      <Popover
+        content={
+          <MenuList>
+            <MenuItem onSelect={signOut}>Sign out</MenuItem>
+          </MenuList>
+        }
+      >
+        <IconButton
+          variant="ghost"
+          size="lg"
+          color="white"
+          icon={"user"}
+          label={user.displayName || user!.email || "?"}
+        />
+      </Popover>
+    </div>
   );
+}
+
+{
+  /* <Avatar
+size="xs"
+src={user.photoURL || undefined}
+name={user.displayName || user!.email || "?"}
+/> */
 }

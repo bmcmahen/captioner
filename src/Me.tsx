@@ -15,14 +15,20 @@ import {
   ListItem,
   Icon,
   List,
-  LayerLoading,
-  toast
+  toast,
+  Popover,
+  IconButton,
+  MenuList,
+  MenuItem
 } from "sancho";
 import { useCollection } from "react-firebase-hooks/firestore";
 import firebase from "firebase/app";
 import { useCreateProject } from "./firebase";
 import { Redirect } from "react-router";
 import { Link } from "react-router-dom";
+import { useSpring, animated } from "react-spring";
+
+const AnimatedLayer = animated(Layer) as any;
 
 export interface MeProps {}
 
@@ -53,19 +59,26 @@ export const Me: React.FunctionComponent<MeProps> = props => {
       });
   }
 
+  const animation = useSpring({
+    from: { opacity: 0, transform: "translateY(-5%)" },
+    opacity: 1,
+    transform: "translateY(0)"
+  });
+
   if (newProjectId) {
     return <Redirect to={newProjectId} />;
   }
 
   return (
     <LoginLayout title={user ? user.displayName || "Profile" : "Profile"}>
-      <Layer
+      <AnimatedLayer
+        style={animation}
         elevation="sm"
         css={{
           overflow: "hidden",
           maxWidth: "550px",
           width: "100%",
-          marginTop: theme.spaces.md
+          marginTop: theme.spaces.xl
         }}
       >
         <Navbar
@@ -123,12 +136,14 @@ export const Me: React.FunctionComponent<MeProps> = props => {
               You have yet to create any projects.
             </Text>
           )}
+
           <List>
             {value &&
               value.docs.map((doc, i) => {
                 return (
                   <ListItem
                     key={doc.id}
+                    iconBefore={<Icon icon="document" size="lg" />}
                     component={Link}
                     css={{
                       padding: `${theme.spaces.md} ${theme.spaces.lg}`,
@@ -137,13 +152,29 @@ export const Me: React.FunctionComponent<MeProps> = props => {
                     }}
                     to={doc.id}
                     primary={doc.get("title")}
-                    iconAfter={<Icon icon="chevron-right" />}
+                    iconAfter={
+                      <Popover
+                        content={
+                          <MenuList>
+                            <MenuItem>Delete project</MenuItem>
+                          </MenuList>
+                        }
+                      >
+                        <IconButton
+                          icon="more"
+                          onClick={e => e.stopPropagation()}
+                          label="Show options"
+                          color={theme.colors.text.muted}
+                          variant="ghost"
+                        />
+                      </Popover>
+                    }
                   />
                 );
               })}
           </List>
         </div>
-      </Layer>
+      </AnimatedLayer>
     </LoginLayout>
   );
 };

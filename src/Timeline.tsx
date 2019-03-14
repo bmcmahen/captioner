@@ -68,6 +68,9 @@ export const Timeline: React.FunctionComponent<TimelineProps> = ({
 
   function wpm(caption: firebase.firestore.QueryDocumentSnapshot) {
     const content = caption.get("content");
+    if (!content) {
+      return 0;
+    }
     const len = content.split(" ").length;
     const duration = caption.get("endTime") - caption.get("startTime");
     return len / duration;

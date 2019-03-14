@@ -95,7 +95,7 @@ export const Captions: React.FunctionComponent<CaptionsProps> = ({
     const activeItem = typeof focus === "number" ? captions.docs[focus] : null;
 
     // handle looping if enabled
-    if (typeof currentTime === "number" && activeItem && isLooping) {
+    if (typeof currentTime === "number" && isLooping && activeItem) {
       if (currentTime > activeItem.get("endTime")) {
         onRequestSeek(activeItem.get("startTime"));
         return;
@@ -105,17 +105,17 @@ export const Captions: React.FunctionComponent<CaptionsProps> = ({
     // otherwise, cycle through our components to find
     // the one we should focus
     if (typeof currentTime === "number") {
-      captions.docs.some((caption, i) => {
-        const d = caption.data();
-        if (d.startTime > currentTime && currentTime < d.endTime) {
-          if (i !== focus) {
-            setActiveItem(i - 1);
-            return true;
-          }
-          return false;
-        }
-        return false;
-      });
+      // captions.docs.some((caption, i) => {
+      //   const d = caption.data();
+      //   if (d.startTime > currentTime && currentTime < d.endTime) {
+      //     if (i !== focus) {
+      //       setActiveItem(i - 1);
+      //       return true;
+      //     }
+      //     return false;
+      //   }
+      //   return false;
+      // });
     }
   }, [currentTime, captions]);
 

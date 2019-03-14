@@ -23,6 +23,9 @@ import {
 import useReactRouter from "use-react-router";
 import queryString from "query-string";
 import { LoginLayout } from "./LoginLayout";
+import { useSpring, animated } from "react-spring";
+
+const AnimatedLayer = animated(Layer) as any;
 
 export interface LoginProps {}
 
@@ -74,6 +77,12 @@ export const Login: React.FunctionComponent<LoginProps> = props => {
     }
   }
 
+  const animation = useSpring({
+    from: { opacity: 0, transform: "translateY(-5%)" },
+    opacity: 1,
+    transform: "translateY(0)"
+  });
+
   if (redirectToReferrer) {
     return <Redirect to={from} />;
   }
@@ -83,12 +92,13 @@ export const Login: React.FunctionComponent<LoginProps> = props => {
       showLogin={false}
       title={isRegistering ? "Register" : "Sign in"}
     >
-      <Layer
+      <AnimatedLayer
+        style={animation}
         css={{
-          marginTop: theme.spaces.sm,
+          marginTop: theme.spaces.xl,
           marginBottom: theme.spaces.lg,
           maxWidth: "450px",
-          background: theme.colors.background.tint1,
+          background: "white",
 
           overflow: "hidden"
         }}
@@ -219,7 +229,7 @@ export const Login: React.FunctionComponent<LoginProps> = props => {
           </div>
         </div>
         <LayerLoading loading={loading} />
-      </Layer>
+      </AnimatedLayer>
     </LoginLayout>
   );
 };

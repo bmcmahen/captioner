@@ -20,6 +20,7 @@ import { Link } from "react-router-dom";
 import { Browser } from "./Browser";
 import Helmet from "react-helmet";
 import { useSession, signOut } from "./auth";
+import { UserPopover } from "./LoginLayout";
 
 export interface BrandingProps {}
 
@@ -36,8 +37,9 @@ export const Branding: React.FunctionComponent<BrandingProps> = props => {
       <div
         css={{
           backgroundAttachment: "fixed",
-          backgroundColor: theme.colors.palette.blue.lightest,
-          backgroundImage: `url("data:image/svg+xml,%3Csvg width='52' height='26' viewBox='0 0 52 26' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23579ad9' fill-opacity='0.17'%3E%3Cpath d='M10 10c0-2.21-1.79-4-4-4-3.314 0-6-2.686-6-6h2c0 2.21 1.79 4 4 4 3.314 0 6 2.686 6 6 0 2.21 1.79 4 4 4 3.314 0 6 2.686 6 6 0 2.21 1.79 4 4 4v2c-3.314 0-6-2.686-6-6 0-2.21-1.79-4-4-4-3.314 0-6-2.686-6-6zm25.464-1.95l8.486 8.486-1.414 1.414-8.486-8.486 1.414-1.414z' /%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
+
+          backgroundImage: `url(${require("./backgrounds/skyline.jpg")})`,
+          backgroundSize: "cover",
           paddingTop: "60px",
           minHeight: "300px",
           width: "100%",
@@ -54,7 +56,7 @@ export const Branding: React.FunctionComponent<BrandingProps> = props => {
             <Text
               variant="display2"
               css={{
-                color: theme.colors.palette.blue.base,
+                color: theme.colors.text.selected,
                 textAlign: "center"
               }}
             >
@@ -62,8 +64,12 @@ export const Branding: React.FunctionComponent<BrandingProps> = props => {
             </Text>
 
             <Text
+              css={{
+                // color: "rgba(255,255,255,0.75)",
+                maxWidth: "38rem",
+                margin: "0 auto"
+              }}
               muted
-              css={{ maxWidth: "38rem", margin: "0 auto" }}
               variant="lead"
             >
               Nope. But Fiddleware does help make subtitling as painless as
@@ -125,31 +131,51 @@ export const Branding: React.FunctionComponent<BrandingProps> = props => {
           <path d="M0 100 C40 0 60 0 100 100 Z" />
         </svg>
         <Container>
-          <NegativeMarginsContainer>
-            <NegativeMarginsContainer
-              css={{
-                display: "block",
-                [theme.breakpoints.lg]: { display: "flex" }
-              }}
-            >
-              <Column
-                title="Some great attribute"
-                content="Dolor veniam pariatur irure officia in. Nostrud magna laborum nostrud consectetur voluptate sunt consectetur et esse magna laboris. Est velit amet ullamco enim magna cupidatat esse ut laborum non aliquip. Non laborum sunt nulla sit consectetur sit non Lorem adipisicing. Laborum ad culpa enim amet tempor do."
-              />
-              <Column
-                title="Some great attribute"
-                content="Dolor veniam pariatur irure officia in. Nostrud magna laborum nostrud consectetur voluptate sunt consectetur et esse magna laboris. Est velit amet ullamco enim magna cupidatat esse ut laborum non aliquip. Non laborum sunt nulla sit consectetur sit non Lorem adipisicing. Laborum ad culpa enim amet tempor do."
-              />
-              <Column
-                title="Some great attribute"
-                content="Dolor veniam pariatur irure officia in. Nostrud magna laborum nostrud consectetur voluptate sunt consectetur et esse magna laboris. Est velit amet ullamco enim magna cupidatat esse ut laborum non aliquip. Non laborum sunt nulla sit consectetur sit non Lorem adipisicing. Laborum ad culpa enim amet tempor do."
-              />
-            </NegativeMarginsContainer>
+          <NegativeMarginsContainer
+            css={{
+              display: "block",
+              justifyContent: "space-evenly",
+              [theme.breakpoints.lg]: { display: "flex" }
+            }}
+          >
+            <Column
+              title="Some great attribute"
+              content="Dolor veniam pariatur irure officia in. Nostrud magna laborum nostrud consectetur voluptate sunt consectetur et esse magna laboris. Est velit amet ullamco enim magna cupidatat esse ut laborum non aliquip. Non laborum sunt nulla sit consectetur sit non Lorem adipisicing. Laborum ad culpa enim amet tempor do."
+            />
+            <Column
+              title="Some great attribute"
+              content="Dolor veniam pariatur irure officia in. Nostrud magna laborum nostrud consectetur voluptate sunt consectetur et esse magna laboris. Est velit amet ullamco enim magna cupidatat esse ut laborum non aliquip. Non laborum sunt nulla sit consectetur sit non Lorem adipisicing. Laborum ad culpa enim amet tempor do."
+            />
           </NegativeMarginsContainer>
         </Container>
       </div>
-      <Divider muted />
-      <div css={{ padding: `${theme.spaces.xl} 0` }}>
+
+      <div
+        css={{
+          background: theme.colors.background.tint1,
+          marginTop: "100px",
+          position: "relative",
+          paddingBottom: `${theme.spaces.xl}`
+        }}
+      >
+        <svg
+          css={{
+            position: "absolute",
+            bottom: "100%",
+            left: 0,
+            right: 0,
+            fill: theme.colors.background.tint1
+          }}
+          id="bigHalfCircle"
+          xmlns="http://www.w3.org/2000/svg"
+          version="1.1"
+          width="100%"
+          height="100"
+          viewBox="0 0 100 100"
+          preserveAspectRatio="none"
+        >
+          <path d="M0 100 C40 0 60 0 100 100 Z" />
+        </svg>
         <Container css={{ textAlign: "center" }}>
           <Text css={{ fontSize: theme.sizes[0] }}>
             Made with ☕ by{" "}
@@ -170,7 +196,7 @@ const Column = ({ title, content }: { title: string; content: string }) => {
   return (
     <div
       css={{
-        maxWidth: "38rem",
+        maxWidth: "28rem",
         margin: "0 auto",
         marginBottom: theme.spaces.xl,
         [theme.breakpoints.lg]: {
@@ -210,58 +236,26 @@ export const AnonNav = ({
   >
     <Toolbar>
       <Link css={{ textDecoration: "none" }} to="/">
-        <Text css={{ color: theme.colors.palette.blue.base }} variant="h6">
+        <Text
+          gutter={false}
+          css={{ color: theme.colors.palette.blue.base }}
+          variant="h6"
+        >
           Fiddleware Subtitles
         </Text>
       </Link>
       <div css={{ flex: 1 }} />
       {user ? (
         <React.Fragment>
-          <Popover
-            content={
-              <MenuList>
-                <MenuItem onSelect={signOut}>Sign out...</MenuItem>
-              </MenuList>
-            }
-          >
-            <Button
-              css={{ marginLeft: theme.spaces.xs }}
-              intent="primary"
-              variant="ghost"
-            >
-              {user.displayName || user.email}
+          {showDashboard && (
+            <Button variant="ghost" intent="primary" component={Link} to="/me">
+              My Projects{" "}
               <Icon
                 color={theme.colors.palette.blue.base}
-                css={{ marginLeft: theme.spaces.sm, color: "white" }}
-                icon="chevron-down"
+                css={{ marginLeft: theme.spaces.sm }}
+                icon="arrow-right"
               />
             </Button>
-          </Popover>
-
-          {showDashboard && (
-            <>
-              <div
-                css={{
-                  width: "1px",
-                  height: "16px",
-                  background: "rgba(0,0,0,0.2)",
-                  margin: `0 ${theme.spaces.xs}`
-                }}
-              />
-              <Button
-                variant="ghost"
-                intent="primary"
-                component={Link}
-                to="/me"
-              >
-                My Projects{" "}
-                <Icon
-                  color={theme.colors.palette.blue.base}
-                  css={{ marginLeft: theme.spaces.md, color: "white" }}
-                  icon="arrow-right"
-                />
-              </Button>
-            </>
           )}
         </React.Fragment>
       ) : (
@@ -272,7 +266,6 @@ export const AnonNav = ({
                 component={Link}
                 to="/login?register=true"
                 variant="ghost"
-                intent="primary"
                 css={{
                   display: "none",
                   [theme.breakpoints.md]: {
