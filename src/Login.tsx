@@ -161,10 +161,12 @@ export const Login: React.FunctionComponent<LoginProps> = props => {
                     Already have an account? <br />
                     <Button
                       size="sm"
-                      // intent="primary"
-                      css={{ marginTop: theme.spaces.sm }}
-                      // css={{ color: "white" }}
-                      // variant="outline"
+                      css={{
+                        marginTop: theme.spaces.sm,
+                        color: "white",
+                        borderColor: "white"
+                      }}
+                      variant="outline"
                       onClick={e => {
                         setIsRegistering(false);
                       }}
@@ -177,8 +179,6 @@ export const Login: React.FunctionComponent<LoginProps> = props => {
                     Don't have an account? <br />
                     <Button
                       size="sm"
-                      // intent="primary"
-
                       css={{
                         marginTop: theme.spaces.sm,
                         color: "white",

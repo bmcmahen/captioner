@@ -3,8 +3,6 @@ import { jsx, Global } from "@emotion/core";
 import * as React from "react";
 import {
   theme,
-  responsiveBodyPadding,
-  Avatar,
   IconButton,
   Popover,
   MenuList,
@@ -13,7 +11,6 @@ import {
   Tooltip
 } from "sancho";
 import { useSession, signOut } from "./auth";
-import { AnonNav } from "./Branding";
 import Helmet from "react-helmet";
 import useRouter from "use-react-router";
 
@@ -127,12 +124,4 @@ export function UserPopover() {
       </Popover>
     </div>
   );
-}
-
-{
-  /* <Avatar
-size="xs"
-src={user.photoURL || undefined}
-name={user.displayName || user!.email || "?"}
-/> */
 }

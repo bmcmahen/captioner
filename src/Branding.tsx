@@ -98,7 +98,9 @@ export const Branding: React.FunctionComponent<BrandingProps> = props => {
               opacity: 1,
               minWidth: "700px",
               minHeight: "300px",
-              background: theme.colors.background.tint1
+              backgroundImage: `url(${require("./backgrounds/thumbnail.jpg")})`,
+              backgroundSize: "cover",
+              backgroundPositionY: "-2px"
             }}
           />
         </Browser>
