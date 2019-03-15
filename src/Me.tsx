@@ -73,7 +73,7 @@ export const Me: React.FunctionComponent<MeProps> = props => {
     <LoginLayout title={user ? user.displayName || "Profile" : "Profile"}>
       <AnimatedLayer
         style={animation}
-        elevation="sm"
+        elevation="xl"
         css={{
           overflow: "hidden",
           maxWidth: "550px",
@@ -137,7 +137,13 @@ export const Me: React.FunctionComponent<MeProps> = props => {
             </Text>
           )}
 
-          <List>
+          <List
+            css={{
+              maxHeight: "60vh",
+              overflowY: "scroll",
+              WebkitOverflowScrolling: "touch"
+            }}
+          >
             {value &&
               value.docs.map((doc, i) => {
                 return (

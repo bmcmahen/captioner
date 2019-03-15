@@ -77,7 +77,13 @@ export const LoginLayout: React.FunctionComponent<LoginLayoutProps> = ({
           {
             display: "flex",
             alignItems: "center",
-            flexDirection: "column"
+            flexDirection: "column",
+            justifyContent: "center",
+            marginTop: "0",
+            [theme.breakpoints.lg]: {
+              marginTop: "-50px"
+            },
+            minHeight: "100vh"
           }
         ]}
       >

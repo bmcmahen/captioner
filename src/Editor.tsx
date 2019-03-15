@@ -286,6 +286,7 @@ function MainEditor({
       }}
     >
       <Layer
+        elevation="xl"
         css={css`
           display: flex;
           min-height: 0;
@@ -326,6 +327,7 @@ function TimelineContainer({
         }}
       >
         <Layer
+          elevation="xl"
           css={{
             borderRadius: theme.radii.lg,
             background: theme.colors.background.tint1,
