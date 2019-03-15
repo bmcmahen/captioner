@@ -14,6 +14,7 @@ import {
 import { useSession, signOut } from "./auth";
 import Helmet from "react-helmet";
 import useRouter from "use-react-router";
+import { Link } from "react-router-dom";
 
 export interface LoginLayoutProps {
   children?: React.ReactNode;
@@ -42,7 +43,7 @@ export const LoginLayout: React.FunctionComponent<LoginLayoutProps> = ({
         styles={{
           body: {
             backgroundColor: "#7fddc7",
-            backgroundImage: `url(${require("./backgrounds/green.jpg")})`,
+            backgroundImage: `url(${require("./backgrounds/skyline.jpg")})`,
             backgroundSize: "cover"
           }
         }}
@@ -53,21 +54,23 @@ export const LoginLayout: React.FunctionComponent<LoginLayoutProps> = ({
           display: "flex",
           position: "fixed",
           top: 0,
-          left: 0
+          left: 0,
+          right: 0,
+          justifyContent: "space-between"
         }}
       >
-        <Tooltip placement="right" content="Go home">
-          <IconButton
-            label="home"
-            component="a"
-            onClick={goHome}
-            href="/"
-            size="lg"
-            variant="ghost"
-            icon="arrow-left"
-            color="white"
-          />
-        </Tooltip>
+        <Button
+          component={Link}
+          variant="ghost"
+          to="/"
+          intent="primary"
+          iconBefore="arrow-left"
+          // css={{ color: "white" }}
+          size="lg"
+        >
+          Home
+        </Button>
+
         <UserPopover />
       </Toolbar>
 
@@ -101,14 +104,6 @@ export function UserPopover() {
 
   return (
     <div css={{ display: "flex", alignItems: "center" }}>
-      <div
-        css={{
-          width: "2px",
-          height: "18px",
-          margin: `0 ${theme.spaces.sm}`,
-          background: "rgba(255,255,255,0.3)"
-        }}
-      />
       <Popover
         content={
           <MenuList>
@@ -119,7 +114,7 @@ export function UserPopover() {
         <Button
           variant="ghost"
           size="lg"
-          css={{ color: "white" }}
+          intent="primary"
           iconBefore={"user"}
           iconAfter="chevron-down"
         >
