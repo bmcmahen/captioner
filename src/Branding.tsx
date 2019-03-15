@@ -79,6 +79,8 @@ export const Branding: React.FunctionComponent<BrandingProps> = props => {
             <Button
               css={{ marginTop: theme.spaces.lg }}
               size="lg"
+              component={Link}
+              to="/new"
               intent="primary"
               iconAfter="arrow-right"
             >
@@ -242,7 +244,7 @@ export const AnonNav = ({
         <Text
           gutter={false}
           css={{ color: theme.colors.palette.blue.base }}
-          variant="h6"
+          variant="h5"
         >
           Fiddleware Subtitles
         </Text>
@@ -251,13 +253,15 @@ export const AnonNav = ({
       {user ? (
         <React.Fragment>
           {showDashboard && (
-            <Button variant="ghost" intent="primary" component={Link} to="/me">
-              My Projects{" "}
-              <Icon
-                color={theme.colors.palette.blue.base}
-                css={{ marginLeft: theme.spaces.sm }}
-                icon="arrow-right"
-              />
+            <Button
+              iconAfter="arrow-right"
+              variant="ghost"
+              size="lg"
+              intent="primary"
+              component={Link}
+              to="/me"
+            >
+              My Projects
             </Button>
           )}
         </React.Fragment>

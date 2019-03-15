@@ -8,7 +8,8 @@ import {
   MenuList,
   MenuItem,
   Toolbar,
-  Tooltip
+  Tooltip,
+  Button
 } from "sancho";
 import { useSession, signOut } from "./auth";
 import Helmet from "react-helmet";
@@ -40,6 +41,7 @@ export const LoginLayout: React.FunctionComponent<LoginLayoutProps> = ({
       <Global
         styles={{
           body: {
+            backgroundColor: "#7fddc7",
             backgroundImage: `url(${require("./backgrounds/green.jpg")})`,
             backgroundSize: "cover"
           }
@@ -114,13 +116,15 @@ export function UserPopover() {
           </MenuList>
         }
       >
-        <IconButton
+        <Button
           variant="ghost"
           size="lg"
-          color="white"
-          icon={"user"}
-          label={user.displayName || user!.email || "?"}
-        />
+          css={{ color: "white" }}
+          iconBefore={"user"}
+          iconAfter="chevron-down"
+        >
+          {user.displayName || user!.email}
+        </Button>
       </Popover>
     </div>
   );

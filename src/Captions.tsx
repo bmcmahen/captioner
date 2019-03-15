@@ -21,6 +21,7 @@ import { captionFactory, CaptionOptions } from "./firebase";
 import formatDuration from "format-duration";
 import useLocalStorage from "react-use-localstorage";
 import { useSpring, animated } from "react-spring";
+import { saveAs as localSave } from "./export";
 
 const log = debug("app:Captions");
 
@@ -118,6 +119,15 @@ export const Captions: React.FunctionComponent<CaptionsProps> = ({
       // });
     }
   }, [currentTime, captions]);
+
+  function exportSRT() {
+    if (!captions) {
+      return;
+    }
+
+    const caps = captions.docs.map(cap => cap.data());
+    localSave("file.srt", caps as Caption[], "srt");
+  }
 
   function addCaption(options: CaptionOptions) {
     collectionReference.add(captionFactory(options));
@@ -295,7 +305,7 @@ export const Captions: React.FunctionComponent<CaptionsProps> = ({
                 background: theme.colors.background.tint2
               }}
             />
-            <Button size="sm" intent="primary" onClick={() => {}}>
+            <Button size="sm" intent="primary" onClick={exportSRT}>
               Export SRT
             </Button>
           </div>

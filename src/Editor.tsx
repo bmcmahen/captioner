@@ -162,7 +162,7 @@ export const Editor: React.FunctionComponent<EditorProps> = ({
                         history.push("/me");
                       }}
                       color="white"
-                      css={{ display: "inline-block" }}
+                      css={{ marginLeft: "-0.5rem" }}
                       icon="arrow-left"
                       label="View your projects"
                       variant="ghost"
