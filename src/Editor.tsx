@@ -20,6 +20,7 @@ import ReactPlayer from "react-player";
 import { Timeline } from "./Timeline";
 import { RouteChildrenProps } from "react-router";
 import { animated, useTrail } from "react-spring";
+import Helmet from "react-helmet";
 
 const log = debug("app:Editor");
 
@@ -57,13 +58,6 @@ export const Editor: React.FunctionComponent<EditorProps> = ({
 
   // the current playback time
   const [time, setTime] = React.useState(0);
-
-  // update our doucment title
-  React.useEffect(() => {
-    if (meta && meta.exists) {
-      document.title = meta.get("title");
-    }
-  }, [meta]);
 
   // set the video URL and save to firebase
   function setVideoURL(url: string, canSave: boolean, name?: string) {
@@ -136,6 +130,7 @@ export const Editor: React.FunctionComponent<EditorProps> = ({
 
   return (
     <Layout>
+      <Helmet title={meta ? meta.get("title") : "Loading"} />
       <MainEditor animation={trail[0]}>
         <VideoContainer>
           {!loading && (
@@ -238,9 +233,9 @@ function Layout({ children, ...other }: { children: React.ReactNode }) {
       <Global
         styles={{
           body: {
-            backgroundImage: `url(${require("./backgrounds/green.jpg")})`,
+            backgroundColor: "#7fddc7",
+            backgroundImage: `url(${require("./backgrounds/skyline.jpg")})`,
             backgroundSize: "cover"
-            // backgroundColor: theme.colors.palette.teal.dark
           }
         }}
       />

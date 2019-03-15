@@ -193,7 +193,7 @@ export const Captions: React.FunctionComponent<CaptionsProps> = ({
                   paddingLeft: theme.spaces.xs,
                   alignItems: "center"
                 }}
-                size="sm"
+                size="md"
                 variant="ghost"
               >
                 {initialCaptionDuration}s

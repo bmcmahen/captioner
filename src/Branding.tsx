@@ -9,35 +9,25 @@ import {
   Button,
   Link as Anchor,
   Container,
-  NegativeMarginsContainer,
-  Divider,
-  Icon,
-  Popover,
-  MenuList,
-  MenuItem
+  NegativeMarginsContainer
 } from "sancho";
 import { Link } from "react-router-dom";
 import { Browser } from "./Browser";
 import Helmet from "react-helmet";
-import { useSession, signOut } from "./auth";
-import { UserPopover } from "./LoginLayout";
+import { useSession } from "./auth";
 
 export interface BrandingProps {}
 
 export const Branding: React.FunctionComponent<BrandingProps> = props => {
-  const bg = theme.colors.palette.blue.light;
-  const text = theme.colors.palette.blue.dark;
-
   const user = useSession();
 
   return (
     <React.Fragment>
-      <Helmet title="Fiddleware Subtitles - Create subtitles for your videos" />
+      <Helmet title="Home" />
       <AnonNav user={user} />
       <div
         css={{
           backgroundAttachment: "fixed",
-
           backgroundImage: `url(${require("./backgrounds/skyline.jpg")})`,
           backgroundSize: "cover",
           paddingTop: "60px",
@@ -65,7 +55,6 @@ export const Branding: React.FunctionComponent<BrandingProps> = props => {
 
             <Text
               css={{
-                // color: "rgba(255,255,255,0.75)",
                 maxWidth: "38rem",
                 margin: "0 auto"
               }}

@@ -125,8 +125,7 @@ export const Login: React.FunctionComponent<LoginProps> = props => {
                 textAlign: "center",
                 [theme.breakpoints.lg]: {
                   textAlign: "left"
-                },
-                color: "white"
+                }
               }}
               variant="h1"
             >
@@ -134,7 +133,6 @@ export const Login: React.FunctionComponent<LoginProps> = props => {
             </Text>
             <Text
               css={{
-                color: "white",
                 display: "block",
                 textAlign: "center",
                 [theme.breakpoints.lg]: {
@@ -162,9 +160,7 @@ export const Login: React.FunctionComponent<LoginProps> = props => {
                     <Button
                       size="sm"
                       css={{
-                        marginTop: theme.spaces.sm,
-                        color: "white",
-                        borderColor: "white"
+                        marginTop: theme.spaces.sm
                       }}
                       variant="outline"
                       onClick={e => {
@@ -180,9 +176,7 @@ export const Login: React.FunctionComponent<LoginProps> = props => {
                     <Button
                       size="sm"
                       css={{
-                        marginTop: theme.spaces.sm,
-                        color: "white",
-                        borderColor: "white"
+                        marginTop: theme.spaces.sm
                       }}
                       variant="outline"
                       onClick={e => {

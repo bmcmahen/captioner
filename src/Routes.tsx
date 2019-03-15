@@ -19,7 +19,7 @@ export const Routes: React.FunctionComponent<RoutesProps> = props => {
       <PrivateRoute path="/me" component={Me} />
       <PrivateRoute path="/new" component={NewProject} />
       <PrivateRoute path="/:id" component={Editor} />
-      <Route component={() => <div>Not found</div>} /> {/* to do */}
+      <Route component={Branding} /> {/* not found: to do */}
     </Switch>
   );
 };

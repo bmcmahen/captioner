@@ -4,10 +4,11 @@ import * as React from "react";
 import firebase from "firebase/app";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { userContext } from "./user-context";
-import { Spinner, theme } from "sancho";
+import { Spinner } from "sancho";
 import { BrowserRouter } from "react-router-dom";
 import debug from "debug";
 import { Routes } from "./Routes";
+import Helmet from "react-helmet";
 
 if (process.env.NODE_ENV !== "production") {
   debug.enable("app:*");
@@ -20,6 +21,7 @@ export const App: React.FunctionComponent<AppProps> = props => {
 
   return (
     <React.Fragment>
+      <Helmet titleTemplate="%s | Fiddleware Subtitles" />
       <Global
         styles={{
           body: {
@@ -31,7 +33,8 @@ export const App: React.FunctionComponent<AppProps> = props => {
       />
       <userContext.Provider
         value={{
-          user: user
+          user: user,
+          initialising
         }}
       >
         {initialising ? (
