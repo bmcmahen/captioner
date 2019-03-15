@@ -80,6 +80,7 @@ export const Branding: React.FunctionComponent<BrandingProps> = props => {
               css={{ marginTop: theme.spaces.lg }}
               size="lg"
               intent="primary"
+              iconAfter="arrow-right"
             >
               Start a new project
             </Button>

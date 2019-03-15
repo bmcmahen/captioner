@@ -149,16 +149,11 @@ export const Me: React.FunctionComponent<MeProps> = props => {
                 return (
                   <ListItem
                     key={doc.id}
-                    iconBefore={<Icon icon="document" size="lg" />}
+                    contentBefore={<Icon icon="document" size="lg" />}
                     component={Link}
-                    css={{
-                      padding: `${theme.spaces.md} ${theme.spaces.lg}`,
-                      borderBottom:
-                        i === value.docs.length - 1 ? "none" : undefined
-                    }}
                     to={doc.id}
                     primary={doc.get("title")}
-                    iconAfter={
+                    contentAfter={
                       <Popover
                         content={
                           <MenuList>
@@ -168,7 +163,10 @@ export const Me: React.FunctionComponent<MeProps> = props => {
                       >
                         <IconButton
                           icon="more"
-                          onClick={e => e.stopPropagation()}
+                          onClick={e => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                          }}
                           label="Show options"
                           color={theme.colors.text.muted}
                           variant="ghost"
