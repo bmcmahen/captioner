@@ -80,7 +80,6 @@ export const Branding: React.FunctionComponent<BrandingProps> = props => {
 
         <Browser
           css={{
-            marginBottom: "-20px",
             display: "flex",
             justifyContent: "center"
           }}
@@ -127,19 +126,50 @@ export const Branding: React.FunctionComponent<BrandingProps> = props => {
         <Container>
           <NegativeMarginsContainer
             css={{
-              display: "block",
-              justifyContent: "space-evenly",
-              [theme.breakpoints.lg]: { display: "flex" }
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center"
             }}
           >
+            <Text
+              css={{
+                margin: `${theme.spaces.xl} 0 `,
+                color: theme.colors.palette.blue.base
+              }}
+              variant="display3"
+            >
+              Create subtitles in three simple steps
+            </Text>
             <Column
-              title="Some great attribute"
-              content="Dolor veniam pariatur irure officia in. Nostrud magna laborum nostrud consectetur voluptate sunt consectetur et esse magna laboris. Est velit amet ullamco enim magna cupidatat esse ut laborum non aliquip. Non laborum sunt nulla sit consectetur sit non Lorem adipisicing. Laborum ad culpa enim amet tempor do."
+              step={1}
+              title="Select almost any video"
+              content="Fiddleware subtitles supports loading local files from your computer, but you can also load videos from YouTube, Vimeo, Wistia, Facebook, Daily Motion, Twitch, and more. "
             />
             <Column
-              title="Some great attribute"
-              content="Dolor veniam pariatur irure officia in. Nostrud magna laborum nostrud consectetur voluptate sunt consectetur et esse magna laboris. Est velit amet ullamco enim magna cupidatat esse ut laborum non aliquip. Non laborum sunt nulla sit consectetur sit non Lorem adipisicing. Laborum ad culpa enim amet tempor do."
+              step={2}
+              title="Loop as you write your captions"
+              content="You might be a fast typer, but chances are you'll need a few chances to get it right. Fiddleware Subtitles includes a loop mode which will repeat a section of video until you've got it right. You can fully adjust the loop length, start time, and end time. And you can even customize playback rate."
             />
+
+            <Column
+              step={3}
+              title="Export to SRT"
+              content="When you feel like you've got everything right, exporting to SRT is one click away. It doesn't get much easier than that. Don't take our word for it? Why not try for free by creating your own project."
+            />
+
+            <Button
+              css={{
+                marginBottom: theme.spaces.xl,
+                marginTop: theme.spaces.xl
+              }}
+              size="lg"
+              component={Link}
+              to="/new"
+              intent="primary"
+              iconAfter="arrow-right"
+            >
+              Get started for free
+            </Button>
           </NegativeMarginsContainer>
         </Container>
       </div>
@@ -186,21 +216,45 @@ export const Branding: React.FunctionComponent<BrandingProps> = props => {
   );
 };
 
-const Column = ({ title, content }: { title: string; content: string }) => {
+const Column = ({
+  step,
+  title,
+  content
+}: {
+  step: number;
+  title: string;
+  content: string;
+}) => {
   return (
     <div
       css={{
         maxWidth: "28rem",
         margin: "0 auto",
-        marginBottom: theme.spaces.xl,
+        textAlign: "center",
+        marginBottom: theme.spaces.lg,
         [theme.breakpoints.lg]: {
           margin: theme.spaces.lg,
-          marginTop: theme.spaces.xl,
-          marginBottom: theme.spaces.xl,
+          marginTop: theme.spaces.lg,
+          marginBottom: theme.spaces.lg,
           flex: "1 1 33.333%"
         }
       }}
     >
+      <Text
+        css={{
+          display: "inline-flex",
+          background: theme.colors.background.tint2,
+          borderRadius: "50%",
+          width: "30px",
+          height: "30px",
+          alignItems: "center",
+          justifyContent: "center"
+        }}
+        variant="h6"
+        muted
+      >
+        {step}
+      </Text>
       <Text variant="h4" css={{ marginBottom: theme.spaces.md }}>
         {title}
       </Text>
