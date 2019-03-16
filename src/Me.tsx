@@ -59,6 +59,19 @@ export const Me: React.FunctionComponent<MeProps> = props => {
       });
   }
 
+  async function deleteProject(doc: firebase.firestore.QueryDocumentSnapshot) {
+    try {
+      doc.ref.delete();
+    } catch (err) {
+      console.error(err);
+      toast({
+        title: "An error occurred. Please try again.",
+        subtitle: err.message,
+        intent: "danger"
+      });
+    }
+  }
+
   const animation = useSpring({
     from: { opacity: 0, transform: "translateY(-5%)" },
     opacity: 1,
@@ -93,13 +106,7 @@ export const Me: React.FunctionComponent<MeProps> = props => {
               Your projects
             </Text>
             <div css={{ flex: 1 }} />
-            <Button
-              onClick={createProject}
-              css={{ position: "relative" }}
-              loading={creatingProject}
-              disabled={creatingProject}
-              intent="primary"
-            >
+            <Button to="/new" component={Link} intent="primary">
               New project
             </Button>
           </Toolbar>
@@ -157,7 +164,16 @@ export const Me: React.FunctionComponent<MeProps> = props => {
                       <Popover
                         content={
                           <MenuList>
-                            <MenuItem>Delete project</MenuItem>
+                            <MenuItem
+                              onClick={e => {
+                                e.preventDefault();
+                              }}
+                              onSelect={() => {
+                                deleteProject(doc);
+                              }}
+                            >
+                              Delete project
+                            </MenuItem>
                           </MenuList>
                         }
                       >

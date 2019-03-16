@@ -5,6 +5,7 @@ import { Redirect } from "react-router";
 import { Alert, Spinner, theme } from "sancho";
 import { useCreateProject } from "./firebase";
 import debug from "debug";
+import { LoginLayout } from "./LoginLayout";
 
 const log = debug("app:NewProject");
 
@@ -42,16 +43,22 @@ export const NewProject: React.FunctionComponent<NewProjectProps> = props => {
   }
 
   if (!id) {
-    return <Spinner />;
+    return (
+      <LoginLayout title="Creating project...">
+        <div
+          css={{
+            width: "100%",
+            height: "100%",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center"
+          }}
+        >
+          <Spinner />
+        </div>
+      </LoginLayout>
+    );
   }
 
   return <Redirect to={id} />;
 };
-
-function projectFactory(uid: string) {
-  return {
-    createdAt: new Date(),
-    updatedAt: new Date(),
-    uid
-  };
-}

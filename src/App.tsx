@@ -31,6 +31,7 @@ export const App: React.FunctionComponent<AppProps> = props => {
           }
         }}
       />
+
       <userContext.Provider
         value={{
           user: user,
@@ -38,7 +39,17 @@ export const App: React.FunctionComponent<AppProps> = props => {
         }}
       >
         {initialising ? (
-          <Spinner />
+          <div
+            style={{
+              height: "100%",
+              width: "100%",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center"
+            }}
+          >
+            <Spinner />
+          </div>
         ) : (
           <BrowserRouter>
             <Routes />
