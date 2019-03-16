@@ -11,7 +11,10 @@ import {
   Tooltip,
   Popover,
   MenuList,
-  MenuItem
+  MenuItem,
+  InputGroup,
+  Button,
+  Input
 } from "sancho";
 import { useDocument, useCollection } from "react-firebase-hooks/firestore";
 import firebase from "firebase/app";
@@ -33,6 +36,7 @@ export const Editor: React.FunctionComponent<EditorProps> = ({
   const { id } = match && match.params;
   const [active, setActive] = React.useState<number | null>(0);
   const [renderMain, setRenderMain] = React.useState(false);
+  const [editNameMode, setEditNameMode] = React.useState(false);
 
   // load the document containing meta about the project
   const { error, loading, value: meta } = useDocument(
@@ -41,6 +45,8 @@ export const Editor: React.FunctionComponent<EditorProps> = ({
       .collection("captions")
       .doc(id)
   );
+
+  const [name, setName] = React.useState(meta ? meta.get("title") : "");
 
   const subcollection = firebase
     .firestore()
@@ -53,8 +59,18 @@ export const Editor: React.FunctionComponent<EditorProps> = ({
 
   // the current video url
   const [video, setVideo] = React.useState<string | null>(
-    meta ? meta.get("video") : null
+    meta ? meta.get("url") : null
   );
+
+  React.useEffect(() => {
+    if (meta && meta.get("url") !== video) {
+      setVideo(meta.get("url"));
+    }
+
+    if (meta && meta.get("title") !== name) {
+      setName(meta.get("title"));
+    }
+  }, [meta]);
 
   // the current playback time
   const [time, setTime] = React.useState(0);
@@ -70,7 +86,7 @@ export const Editor: React.FunctionComponent<EditorProps> = ({
     }
 
     // save the video name to firebase if different
-    if (meta && meta.get("title") !== name) {
+    if (meta && name && meta.get("title") !== name) {
       meta.ref.set({ title: name }, { merge: true });
     }
   }
@@ -114,6 +130,16 @@ export const Editor: React.FunctionComponent<EditorProps> = ({
       // setTime(seconds);
       player.current.seekTo(seconds);
     }
+  }
+
+  function editName() {
+    setEditNameMode(true);
+  }
+
+  function changeName(e: React.FormEvent) {
+    e.preventDefault();
+    meta!.ref.set({ title: name }, { merge: true });
+    setEditNameMode(false);
   }
 
   // error is loading errors or the document doesn't exist
@@ -164,34 +190,77 @@ export const Editor: React.FunctionComponent<EditorProps> = ({
                     />
                   </Tooltip>
                   {meta && (
-                    <Text
-                      variant="h6"
-                      gutter={false}
-                      css={{ marginLeft: theme.spaces.sm, color: "white" }}
-                    >
-                      {meta.get("title")}
-                    </Text>
+                    <React.Fragment>
+                      {editNameMode ? (
+                        <form css={{ display: "flex" }} onSubmit={changeName}>
+                          <InputGroup
+                            label="Project name"
+                            hideLabel
+                            css={{ margin: 0 }}
+                          >
+                            <Input
+                              inputSize="sm"
+                              placeholder="Your project name"
+                              value={name}
+                              autoFocus
+                              onChange={e => setName(e.target.value)}
+                              css={{
+                                background: "white",
+                                boxShadow: "none",
+                                borderTopRightRadius: 0,
+                                borderBottomRightRadius: 0
+                              }}
+                            />
+                          </InputGroup>
+                          <Button
+                            css={{
+                              borderTopLeftRadius: 0,
+                              borderBottomLeftRadius: 0
+                            }}
+                            size="sm"
+                            type="submit"
+                            disabled={!name}
+                            intent="primary"
+                          >
+                            Done
+                          </Button>
+                        </form>
+                      ) : (
+                        <Text
+                          variant="h6"
+                          onDoubleClick={() => setEditNameMode(true)}
+                          gutter={false}
+                          css={{ marginLeft: theme.spaces.sm, color: "white" }}
+                        >
+                          {meta.get("title")}
+                        </Text>
+                      )}
+                    </React.Fragment>
                   )}
                 </div>
-                {video && (
-                  <Popover
-                    content={
-                      <MenuList>
-                        <MenuItem onSelect={onRemoveVideo}>
-                          Remove Current Video
-                        </MenuItem>
-                      </MenuList>
-                    }
-                  >
-                    <IconButton
-                      color="white"
-                      icon="more"
-                      disabled={!video}
-                      label="More options"
-                      variant="ghost"
-                    />
-                  </Popover>
-                )}
+
+                <Popover
+                  content={
+                    <MenuList>
+                      <MenuItem
+                        css={{ display: video ? "block" : "none" }}
+                        onSelect={onRemoveVideo}
+                      >
+                        Remove Current Video
+                      </MenuItem>
+
+                      <MenuItem onSelect={editName}>Edit project name</MenuItem>
+                    </MenuList>
+                  }
+                >
+                  <IconButton
+                    color="white"
+                    icon="more"
+                    disabled={!meta}
+                    label="More options"
+                    variant="ghost"
+                  />
+                </Popover>
               </React.Fragment>
             </Video>
           )}

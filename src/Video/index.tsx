@@ -12,7 +12,7 @@ export interface VideoProps {
   url: string | null;
   children?: React.ReactNode;
   setVideoDuration: (seconds: number) => void;
-  setVideoURL: (url: string, canSave: boolean, name: string) => void;
+  setVideoURL: (url: string, canSave: boolean, name?: string) => void;
   player: React.RefObject<ReactPlayer>;
   setCurrentTime: (seconds: number) => void;
 }
@@ -25,6 +25,8 @@ export const Video: React.FunctionComponent<VideoProps> = ({
   url,
   player
 }) => {
+  const [playing, setPlaying] = React.useState(true);
+
   React.useEffect(() => {
     try {
       if (url) {
@@ -109,10 +111,14 @@ export const Video: React.FunctionComponent<VideoProps> = ({
         <Embed width={16} height={9}>
           <ReactPlayer
             controls
+            playsinline
             width="100%"
             ref={player}
             style={{ height: "100%", display: "flex" }}
             height="auto"
+            playing={playing}
+            onPlay={() => setPlaying(true)}
+            onPause={() => setPlaying(false)}
             url={url}
             onProgress={onProgress}
             progressInterval={350}
