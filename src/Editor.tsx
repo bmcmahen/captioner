@@ -63,7 +63,7 @@ export const Editor: React.FunctionComponent<EditorProps> = ({
   );
 
   React.useEffect(() => {
-    if (meta && meta.get("url") !== video) {
+    if (meta && meta.get("url") !== video && meta.get("url")) {
       setVideo(meta.get("url"));
     }
 
@@ -86,7 +86,7 @@ export const Editor: React.FunctionComponent<EditorProps> = ({
     }
 
     // save the video name to firebase if different
-    if (meta && name && meta.get("title") !== name) {
+    if (meta && name && !meta.get("customName") && meta.get("title") !== name) {
       meta.ref.set({ title: name }, { merge: true });
     }
   }
@@ -95,8 +95,7 @@ export const Editor: React.FunctionComponent<EditorProps> = ({
     setVideo("");
     if (meta) {
       meta.ref.update({
-        url: firebase.firestore.FieldValue.delete(),
-        title: "Untitled document"
+        url: firebase.firestore.FieldValue.delete()
       });
     }
   }
@@ -138,7 +137,7 @@ export const Editor: React.FunctionComponent<EditorProps> = ({
 
   function changeName(e: React.FormEvent) {
     e.preventDefault();
-    meta!.ref.set({ title: name }, { merge: true });
+    meta!.ref.set({ title: name, customName: true }, { merge: true });
     setEditNameMode(false);
   }
 
