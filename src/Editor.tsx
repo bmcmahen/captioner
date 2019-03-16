@@ -403,6 +403,10 @@ function TimelineContainer({
         transform: animation.y.interpolate((y: number) => `translateY(${y}%)`)
       }}
       css={{
+        display: "none",
+        [theme.breakpoints.md]: {
+          display: "block"
+        },
         gridArea: "timeline"
       }}
     >

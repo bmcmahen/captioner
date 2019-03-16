@@ -1,7 +1,15 @@
 /** @jsx jsx */
 import { jsx, Global } from "@emotion/core";
 import * as React from "react";
-import { theme, Popover, MenuList, MenuItem, Toolbar, Button } from "sancho";
+import {
+  theme,
+  Popover,
+  MenuList,
+  MenuItem,
+  Toolbar,
+  Button,
+  responsiveBodyPadding
+} from "sancho";
 import { useSession, signOut } from "./auth";
 import Helmet from "react-helmet";
 import useRouter from "use-react-router";
@@ -69,12 +77,13 @@ export const LoginLayout: React.FunctionComponent<LoginLayoutProps> = ({
         css={[
           {
             display: "flex",
-            alignItems: "center",
-            flexDirection: "column",
-            justifyContent: "center",
+            ...responsiveBodyPadding,
             marginTop: "0",
-            [theme.breakpoints.lg]: {
-              marginTop: "-50px"
+            [theme.breakpoints.md]: {
+              marginTop: "-50px",
+              alignItems: "center",
+              flexDirection: "column",
+              justifyContent: "center"
             },
             minHeight: "100vh"
           }

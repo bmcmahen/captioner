@@ -88,10 +88,16 @@ export const Me: React.FunctionComponent<MeProps> = props => {
         style={animation}
         elevation="xl"
         css={{
+          borderRadius: 0,
+          marginLeft: "auto",
+          marginRight: "auto",
+          [theme.breakpoints.md]: {
+            borderRadius: theme.radii.lg,
+            marginTop: theme.spaces.xl
+          },
           overflow: "hidden",
           maxWidth: "550px",
-          width: "100%",
-          marginTop: theme.spaces.xl
+          width: "100%"
         }}
       >
         <Navbar
@@ -159,6 +165,7 @@ export const Me: React.FunctionComponent<MeProps> = props => {
                     contentBefore={<Icon icon="document" size="lg" />}
                     component={Link}
                     to={doc.id}
+                    wrap={false}
                     primary={doc.get("title")}
                     contentAfter={
                       <Popover
