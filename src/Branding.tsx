@@ -9,7 +9,7 @@ import {
   Button,
   Link as Anchor,
   Container,
-  NegativeMarginsContainer
+  Divider
 } from "sancho";
 import { Link } from "react-router-dom";
 import { Browser } from "./Browser";
@@ -81,14 +81,20 @@ export const Branding: React.FunctionComponent<BrandingProps> = props => {
         <Browser
           css={{
             display: "flex",
-            justifyContent: "center"
+            justifyContent: "center",
+            padding: theme.spaces.sm,
+            paddingBottom: 0
           }}
         >
           <div
             css={{
               opacity: 1,
-              minWidth: "700px",
-              minHeight: "300px",
+              // minWidth: "300px",
+              width: "100%",
+              minHeight: "150px",
+              [theme.breakpoints.md]: {
+                minHeight: "300px"
+              },
               backgroundImage: `url(${require("./backgrounds/thumbnail.jpg")})`,
               backgroundSize: "cover",
               backgroundPositionY: "-2px"
@@ -107,6 +113,10 @@ export const Branding: React.FunctionComponent<BrandingProps> = props => {
       >
         <svg
           css={{
+            display: "none",
+            [theme.breakpoints.md]: {
+              display: "block"
+            },
             position: "absolute",
             bottom: "100%",
             left: 0,
@@ -124,43 +134,57 @@ export const Branding: React.FunctionComponent<BrandingProps> = props => {
           <path d="M0 100 C40 0 60 0 100 100 Z" />
         </svg>
         <Container>
-          <NegativeMarginsContainer
+          <Text
             css={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center"
+              textAlign: "center",
+              padding: `${theme.spaces.xl} 0 `,
+              paddingBottom: 0,
+              color: theme.colors.palette.blue.base
+            }}
+            variant="display3"
+          >
+            Create subtitles in three simple steps
+          </Text>
+          <Column
+            step={1}
+            title="Select almost any video"
+            content="Fiddleware subtitles supports loading local files from your computer, but you can also load videos from YouTube, Vimeo, Wistia, Facebook, Daily Motion, Twitch, and more. "
+          />
+          <Column
+            step={2}
+            title="Loop as you write your captions"
+            content="You might be a fast typer, but chances are you'll need a few chances to get it right. Fiddleware Subtitles includes a loop mode which will repeat a section of video until you've got it down."
+          />
+
+          <Column
+            step={3}
+            title="Export to SRT"
+            content="When you feel like you've got everything right, exporting to SRT is one click away. It doesn't get much easier than that. "
+          />
+          <Divider
+            css={{ marginLeft: "auto", marginRight: "auto", width: "200px" }}
+          />
+          <div
+            css={{
+              marginTop: theme.spaces.lg,
+              [theme.breakpoints.md]: {
+                marginTop: theme.spaces.xl
+              },
+              textAlign: "center"
             }}
           >
-            <Text
-              css={{
-                margin: `${theme.spaces.xl} 0 `,
-                color: theme.colors.palette.blue.base
-              }}
-              variant="display3"
-            >
-              Create subtitles in three simple steps
+            <Text variant="h5" css={{ color: theme.colors.palette.blue.base }}>
+              Don't take our word for it. <br /> Try for free by creating your
+              own project.
             </Text>
-            <Column
-              step={1}
-              title="Select almost any video"
-              content="Fiddleware subtitles supports loading local files from your computer, but you can also load videos from YouTube, Vimeo, Wistia, Facebook, Daily Motion, Twitch, and more. "
-            />
-            <Column
-              step={2}
-              title="Loop as you write your captions"
-              content="You might be a fast typer, but chances are you'll need a few chances to get it right. Fiddleware Subtitles includes a loop mode which will repeat a section of video until you've got it right. You can fully adjust the loop length, start time, and end time. And you can even customize playback rate."
-            />
-
-            <Column
-              step={3}
-              title="Export to SRT"
-              content="When you feel like you've got everything right, exporting to SRT is one click away. It doesn't get much easier than that. Don't take our word for it? Why not try for free by creating your own project."
-            />
-
             <Button
               css={{
-                marginBottom: theme.spaces.xl,
-                marginTop: theme.spaces.xl
+                marginBottom: theme.spaces.sm,
+                marginTop: theme.spaces.md,
+                [theme.breakpoints.md]: {
+                  marginBottom: theme.spaces.xl,
+                  marginTop: theme.spaces.md
+                }
               }}
               size="lg"
               component={Link}
@@ -170,20 +194,27 @@ export const Branding: React.FunctionComponent<BrandingProps> = props => {
             >
               Get started for free
             </Button>
-          </NegativeMarginsContainer>
+          </div>
         </Container>
       </div>
 
       <div
         css={{
           background: theme.colors.background.tint1,
-          marginTop: "100px",
+          marginTop: theme.spaces.lg,
           position: "relative",
-          paddingBottom: `${theme.spaces.xl}`
+          paddingBottom: `${theme.spaces.xl}`,
+          [theme.breakpoints.md]: {
+            marginTop: "100px"
+          }
         }}
       >
         <svg
           css={{
+            display: "none",
+            [theme.breakpoints.md]: {
+              display: "block"
+            },
             position: "absolute",
             bottom: "100%",
             left: 0,
@@ -200,7 +231,21 @@ export const Branding: React.FunctionComponent<BrandingProps> = props => {
         >
           <path d="M0 100 C40 0 60 0 100 100 Z" />
         </svg>
-        <Container css={{ textAlign: "center" }}>
+        <Container
+          css={{
+            paddingTop: theme.spaces.xl,
+            [theme.breakpoints.md]: {
+              paddingTop: 0
+            },
+            textAlign: "center"
+          }}
+        >
+          <img
+            src="https://pbs.twimg.com/profile_images/775452326450475009/MTsFSYGs_400x400.jpg"
+            css={{ width: "50px", height: "50px", borderRadius: "50%" }}
+          />
+          <br />
+          <br />
           <Text css={{ fontSize: theme.sizes[0] }}>
             Made with ☕ by{" "}
             <Anchor href="http://benmcmahen.com">Ben McMahen</Anchor>
@@ -228,14 +273,16 @@ const Column = ({
   return (
     <div
       css={{
-        maxWidth: "28rem",
+        maxWidth: "30rem",
         margin: "0 auto",
         textAlign: "center",
         marginBottom: theme.spaces.lg,
         [theme.breakpoints.lg]: {
           margin: theme.spaces.lg,
-          marginTop: theme.spaces.lg,
-          marginBottom: theme.spaces.lg,
+          marginTop: theme.spaces.xl,
+          marginBottom: theme.spaces.xl,
+          marginLeft: "auto",
+          marginRight: "auto",
           flex: "1 1 33.333%"
         }
       }}
@@ -246,6 +293,7 @@ const Column = ({
           background: theme.colors.background.tint2,
           borderRadius: "50%",
           width: "30px",
+          marginBottom: theme.spaces.md,
           height: "30px",
           alignItems: "center",
           justifyContent: "center"

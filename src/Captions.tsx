@@ -45,6 +45,7 @@ export const Captions: React.FunctionComponent<CaptionsProps> = ({
   captions,
   currentTime,
   active,
+
   duration,
   collectionReference,
   onRequestSeek
@@ -372,6 +373,7 @@ export const Captions: React.FunctionComponent<CaptionsProps> = ({
                   },
                   { merge: true }
                 );
+                onRequestSeek(caption.get("endTime"));
               }}
               onRequestDelete={() => {
                 // 1. if there's only one caption left, don't delete it
