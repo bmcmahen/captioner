@@ -1,7 +1,7 @@
 /** @jsx jsx */
-import { jsx, Global } from "@emotion/core";
+import { jsx } from "@emotion/core";
 import * as React from "react";
-import { Link as RouterLink, Redirect } from "react-router-dom";
+import { Redirect } from "react-router-dom";
 import {
   theme,
   Layer,
@@ -9,22 +9,15 @@ import {
   Button,
   Input,
   InputGroup,
-  Icon,
-  Link,
   LayerLoading,
   Alert,
   Container
 } from "sancho";
-import {
-  loginWithGoogle,
-  loginWithGithub,
-  loginWithEmail,
-  createUserWithEmail
-} from "./auth";
+import { loginWithGoogle, loginWithEmail, createUserWithEmail } from "./auth";
 import useReactRouter from "use-react-router";
 import queryString from "query-string";
 import { LoginLayout } from "./LoginLayout";
-import { useSpring, animated, useTrail, config } from "react-spring";
+import { animated, useTrail, config } from "react-spring";
 
 const AnimatedLayer = animated(Layer) as any;
 

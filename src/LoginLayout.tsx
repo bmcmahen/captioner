@@ -1,16 +1,7 @@
 /** @jsx jsx */
 import { jsx, Global } from "@emotion/core";
 import * as React from "react";
-import {
-  theme,
-  IconButton,
-  Popover,
-  MenuList,
-  MenuItem,
-  Toolbar,
-  Tooltip,
-  Button
-} from "sancho";
+import { theme, Popover, MenuList, MenuItem, Toolbar, Button } from "sancho";
 import { useSession, signOut } from "./auth";
 import Helmet from "react-helmet";
 import useRouter from "use-react-router";

@@ -14,7 +14,9 @@ import {
   MenuItem,
   InputGroup,
   Button,
-  Input
+  Input,
+  Alert,
+  Link
 } from "sancho";
 import { useDocument, useCollection } from "react-firebase-hooks/firestore";
 import firebase from "firebase/app";
@@ -141,17 +143,40 @@ export const Editor: React.FunctionComponent<EditorProps> = ({
     setEditNameMode(false);
   }
 
-  // error is loading errors or the document doesn't exist
-  if (error || (meta && !meta.exists)) {
-    return <div>Alert</div>;
-  }
-
   const trail = useTrail(2, {
     from: { opacity: 0, y: 3 },
     opacity: 1,
     y: 0,
     onRest: () => setRenderMain(true)
   });
+
+  // error is loading errors or the document doesn't exist
+
+  if (error || (meta && !meta.exists)) {
+    return (
+      <Layout>
+        <div
+          css={{
+            padding: `${theme.spaces.lg} 0`,
+            display: "flex",
+            justifyContent: "center"
+          }}
+        >
+          <div>
+            <Alert
+              title="An error occurred while loading your content"
+              subtitle={
+                <span>
+                  Please ensure that you have a correct URL and try again. You
+                  can also try going <Link href="/">home.</Link>
+                </span>
+              }
+            />
+          </div>
+        </div>
+      </Layout>
+    );
+  }
 
   return (
     <Layout>
