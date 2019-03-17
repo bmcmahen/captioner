@@ -1,7 +1,7 @@
 {
   "name": "subtitles",
   "version": "0.1.0",
-  "private": true,
+  "author": "Ben McMahen <ben.mcmahen@gmail.com>",
   "resolutions": {
     "sancho/react": "^16.8.4",
     "sancho/react-dom": "^16.8.4"
