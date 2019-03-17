@@ -334,7 +334,7 @@ export const AnonNav = ({
       <Link css={{ textDecoration: "none" }} to="/">
         <Text
           gutter={false}
-          css={{ fontWeight: 400, color: theme.colors.palette.blue.base }}
+          css={{ color: theme.colors.palette.blue.base }}
           variant="h5"
         >
           Fiddleware Subtitles

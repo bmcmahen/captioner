@@ -194,6 +194,7 @@ export const Editor: React.FunctionComponent<EditorProps> = ({
               <React.Fragment>
                 <div
                   css={{
+                    overflow: "hidden",
                     display: "flex",
                     alignItems: "center"
                   }}
@@ -252,9 +253,14 @@ export const Editor: React.FunctionComponent<EditorProps> = ({
                       ) : (
                         <Text
                           variant="h6"
+                          wrap={false}
                           onDoubleClick={() => setEditNameMode(true)}
                           gutter={false}
-                          css={{ marginLeft: theme.spaces.sm, color: "white" }}
+                          css={{
+                            marginRight: theme.spaces.md,
+                            marginLeft: theme.spaces.sm,
+                            color: "white"
+                          }}
                         >
                           {meta.get("title")}
                         </Text>
@@ -442,7 +448,13 @@ function CaptionsContainer({ children }: { children?: React.ReactNode }) {
 
 function VideoContainer({ children }: { children?: React.ReactNode }) {
   return (
-    <div css={{ background: theme.colors.palette.gray.base, flex: "1 1 50%" }}>
+    <div
+      css={{
+        overflow: "hidden",
+        background: theme.colors.palette.gray.base,
+        flex: "1 1 50%"
+      }}
+    >
       {children}
     </div>
   );
