@@ -39,16 +39,8 @@ export const App: React.FunctionComponent<AppProps> = props => {
         }}
       >
         {initialising ? (
-          <div
-            style={{
-              height: "100%",
-              width: "100%",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center"
-            }}
-          >
-            <Spinner />
+          <div style={{ height: "100vh" }}>
+            <Spinner center />
           </div>
         ) : (
           <BrowserRouter>

@@ -45,17 +45,7 @@ export const NewProject: React.FunctionComponent<NewProjectProps> = props => {
   if (!id) {
     return (
       <LoginLayout title="Creating project...">
-        <div
-          css={{
-            width: "100%",
-            height: "100%",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center"
-          }}
-        >
-          <Spinner />
-        </div>
+        <Spinner label="Creating project..." center />
       </LoginLayout>
     );
   }
