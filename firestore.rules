@@ -9,15 +9,21 @@ service cloud.firestore {
   }
 
   function isCreatingWithUserId() {
-    return request.auth.uid == request.resource.data.userId;
+    return request.auth.uid == request.resource.data.uid;
   }
 
+
   match /databases/{database}/documents {
+    
     match /captions/{caption} {
       allow update: if isOwnedByUser() && isCreatingWithUserId();
       allow delete: if isOwnedByUser();
       allow create: if isCreatingWithUserId();
       allow read: if isOwnedByUser();
+      
+      match /entries/{entry} {
+        allow read, write: if get(/databases/$(database)/documents/captions/$(caption)).data.uid == request.auth.uid;
+      }
     }
   }
 }

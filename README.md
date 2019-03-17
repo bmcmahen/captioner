@@ -37,6 +37,11 @@ yarn start
 This runs the app in the development mode.<br>
 Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
-### `npm run build`
+## Deploying
 
-Builds the app for production to the `build` folder.<br>
+Use firebase-cli to initalize a project in the root directory. Then build your project and deploy.
+
+```
+yarn run build
+firebase deploy
+```
