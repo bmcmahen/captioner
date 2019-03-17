@@ -1,0 +1,23 @@
+service cloud.firestore {
+
+  function isSignedIn() {
+    return request.auth != null;
+  }
+
+  function isOwnedByUser() {
+    return resource.data.uid == request.auth.uid;
+  }
+
+  function isCreatingWithUserId() {
+    return request.auth.uid == request.resource.data.userId;
+  }
+
+  match /databases/{database}/documents {
+    match /captions/{caption} {
+      allow update: if isOwnedByUser() && isCreatingWithUserId();
+      allow delete: if isOwnedByUser();
+      allow create: if isCreatingWithUserId();
+      allow read: if isOwnedByUser();
+    }
+  }
+}
