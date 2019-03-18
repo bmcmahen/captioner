@@ -2,7 +2,7 @@
 
 Fiddleware Subtitles is a web app that allows you to produce SRT files for mp4, YouTube, or Vimeo videos directly in your web browser.
 
-It's a sample app for the [Sancho-UI](https://github.com/bmcmahen/sancho) design system, and it's a rewrite of [Subtitles](https://github.com/bmcmahen/Subtitles) which I built with Meteor about five years ago.
+It's built using the [Sancho-UI](https://github.com/bmcmahen/sancho) design system, Firebase, Typescript, React and Emotion.
 
 [Try it out here](https://subtitles-c6d76.firebaseapp.com/).
 
