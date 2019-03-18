@@ -252,8 +252,11 @@ export const Branding: React.FunctionComponent<BrandingProps> = props => {
           </Text>
           <br />
           <Text css={{ fontSize: theme.sizes[0] }}>
-            View the <Anchor href="http://benmcmahen.com">source</Anchor> on
-            Github
+            View the{" "}
+            <Anchor href="https://github.com/bmcmahen/fiddleware-subtitles">
+              source
+            </Anchor>{" "}
+            on Github
           </Text>
         </Container>
       </div>
