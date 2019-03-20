@@ -256,6 +256,27 @@ export const Branding: React.FunctionComponent<BrandingProps> = props => {
             <Anchor href="https://github.com/bmcmahen/captioner">source</Anchor>{" "}
             on Github
           </Text>
+          <br />
+          <Text css={{ fontSize: theme.sizes[0] }}>
+            <div>
+              Icons made by{" "}
+              <Anchor href="https://www.freepik.com/" title="Freepik">
+                Freepik
+              </Anchor>{" "}
+              from{" "}
+              <Anchor href="https://www.flaticon.com/" title="Flaticon">
+                www.flaticon.com
+              </Anchor>{" "}
+              is licensed by{" "}
+              <Anchor
+                href="http://creativecommons.org/licenses/by/3.0/"
+                title="Creative Commons BY 3.0"
+                target="_blank"
+              >
+                CC 3.0 BY
+              </Anchor>
+            </div>
+          </Text>
         </Container>
       </div>
     </React.Fragment>
