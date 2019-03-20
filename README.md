@@ -1,6 +1,6 @@
-# Fiddleware Subtitles
+# Captioner.app
 
-Fiddleware Subtitles is a web app that allows you to produce SRT files for mp4, YouTube, or Vimeo videos directly in your web browser.
+Captioner.app is a web app that allows you to produce SRT files for mp4, YouTube, or Vimeo videos directly in your web browser.
 
 It's built using the [Sancho-UI](https://github.com/bmcmahen/sancho) design system, Firebase, Typescript, React and Emotion.
 

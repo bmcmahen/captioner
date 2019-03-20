@@ -61,7 +61,7 @@ export const Branding: React.FunctionComponent<BrandingProps> = props => {
               muted
               variant="lead"
             >
-              Nope. But Fiddleware does help make subtitling as painless as
+              Nope. But Captioner does help make subtitling as painless as
               possible. And it's free to try it out. So why not give it a go?
             </Text>
 
@@ -148,12 +148,12 @@ export const Branding: React.FunctionComponent<BrandingProps> = props => {
           <Column
             step={1}
             title="Select almost any video"
-            content="Fiddleware subtitles supports loading local files from your computer, but you can also load videos from YouTube, Vimeo, Wistia, Facebook, Daily Motion, Twitch, and more. "
+            content="Captioner supports loading local files from your computer, but you can also load videos from YouTube, Vimeo, Wistia, Facebook, Daily Motion, Twitch, and more. "
           />
           <Column
             step={2}
             title="Loop as you write your captions"
-            content="You might be a fast typer, but chances are you'll need a few chances to get it right. Fiddleware Subtitles includes a loop mode which will repeat a section of video until you've got it down."
+            content="You might be a fast typer, but chances are you'll need a few chances to get it right. Captioner includes a loop mode which will repeat a section of video until you've got it down."
           />
 
           <Column
@@ -253,9 +253,7 @@ export const Branding: React.FunctionComponent<BrandingProps> = props => {
           <br />
           <Text css={{ fontSize: theme.sizes[0] }}>
             View the{" "}
-            <Anchor href="https://github.com/bmcmahen/fiddleware-subtitles">
-              source
-            </Anchor>{" "}
+            <Anchor href="https://github.com/bmcmahen/captioner">source</Anchor>{" "}
             on Github
           </Text>
         </Container>
@@ -340,7 +338,7 @@ export const AnonNav = ({
           css={{ fontWeight: 400, color: theme.colors.palette.blue.base }}
           variant="h5"
         >
-          Fiddleware Subtitles
+          Captioner.app
         </Text>
       </Link>
       <div css={{ flex: 1 }} />

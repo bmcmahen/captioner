@@ -122,7 +122,9 @@ export const Login: React.FunctionComponent<LoginProps> = props => {
               }}
               variant="h1"
             >
-              {isRegistering ? "Sign up to Fiddleware" : "Login to Fiddleware"}
+              {isRegistering
+                ? "Sign up to Captioner.app"
+                : "Login to Captioner.app"}
             </Text>
             <Text
               css={{
@@ -135,7 +137,7 @@ export const Login: React.FunctionComponent<LoginProps> = props => {
               variant="lead"
               muted
             >
-              Creating an account on Fiddleware is necessary to save your
+              Creating an account on Captioner is necessary to save your
               content. It's completely free, and we won't share your content
               with anyone.
               <br />

@@ -21,7 +21,7 @@ export const App: React.FunctionComponent<AppProps> = props => {
 
   return (
     <React.Fragment>
-      <Helmet titleTemplate="%s | Fiddleware Subtitles" />
+      <Helmet titleTemplate="%s | Captioner.app" />
       <Global
         styles={{
           body: {
