@@ -26,8 +26,7 @@ export const App: React.FunctionComponent<AppProps> = props => {
         styles={{
           body: {
             padding: 0,
-            margin: 0,
-            minHeight: "100vh"
+            margin: 0
           }
         }}
       />

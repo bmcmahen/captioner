@@ -43,7 +43,8 @@ export const LoginLayout: React.FunctionComponent<LoginLayoutProps> = ({
           body: {
             backgroundColor: "#7fddc7",
             backgroundImage: `url(${require("./backgrounds/skyline.jpg")})`,
-            backgroundSize: "cover"
+            backgroundSize: "cover",
+            backgroundAttachment: "fixed"
           }
         }}
       />

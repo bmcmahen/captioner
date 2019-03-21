@@ -117,10 +117,7 @@ export const Login: React.FunctionComponent<LoginProps> = props => {
               <Text variant="h4">
                 {isRegistering ? "Create an account" : "Log in to your account"}
               </Text>
-              <Text variant="paragraph">
-                Creating an account on Captioner is necessary to save your
-                content. It's completely free!
-              </Text>
+
               <div
                 css={{
                   textAlign: "center",
