@@ -71,11 +71,11 @@ export const Login: React.FunctionComponent<LoginProps> = props => {
     }
   }
 
-  const animation = useTrail(2, {
+  const animation = useTrail(1, {
     config: config.slow,
-    from: { opacity: 0, x: 5 },
+    from: { opacity: 0, transform: `translateY(-5%)` },
     opacity: 1,
-    x: 0
+    transform: `translateY(0)`
   });
 
   if (redirectToReferrer) {
@@ -92,65 +92,43 @@ export const Login: React.FunctionComponent<LoginProps> = props => {
           css={{
             marginTop: theme.spaces.xl,
             marginBottom: theme.spaces.lg,
-            maxWidth: "30rem",
+            maxWidth: "26rem",
             marginLeft: "auto",
             marginRight: "auto",
-            display: "block",
-            [theme.breakpoints.lg]: {
-              display: "flex",
-              maxWidth: "950px"
-            },
-            alignItems: "center"
+            display: "block"
           }}
         >
-          <animated.div
+          <AnimatedLayer
             style={animation[0]}
             css={{
-              flex: "1 1 50%",
-              [theme.breakpoints.lg]: {
-                width: "50%",
-                marginRight: theme.spaces.xl
-              }
+              marginTop: theme.spaces.xl,
+              background: "white"
             }}
           >
-            <Text
+            <div
               css={{
+                borderBottom: "1px solid",
+                borderColor: theme.colors.border.muted,
                 textAlign: "center",
-                [theme.breakpoints.lg]: {
-                  textAlign: "left"
-                }
+                padding: theme.spaces.lg,
+                paddingBottom: theme.spaces.sm
               }}
-              variant="h1"
             >
-              {isRegistering
-                ? "Sign up to Captioner.app"
-                : "Login to Captioner.app"}
-            </Text>
-            <Text
-              css={{
-                display: "block",
-                textAlign: "center",
-                [theme.breakpoints.lg]: {
-                  textAlign: "left"
-                }
-              }}
-              variant="lead"
-              muted
-            >
-              Creating an account on Captioner is necessary to save your
-              content. It's completely free, and we won't share your content
-              with anyone.
-              <br />
-              <Text
-                variant="body"
+              <Text variant="h4">
+                {isRegistering ? "Create an account" : "Log in to your account"}
+              </Text>
+              <Text variant="paragraph">
+                Creating an account on Captioner is necessary to save your
+                content. It's completely free!
+              </Text>
+              <div
                 css={{
-                  display: "block",
-                  marginTop: theme.spaces.md,
-                  color: "inherit"
+                  textAlign: "center",
+                  paddingBottom: theme.spaces.sm
                 }}
               >
                 {isRegistering ? (
-                  <span>
+                  <Text css={{ fontSize: theme.sizes[0] }}>
                     Already have an account? <br />
                     <Button
                       size="sm"
@@ -164,9 +142,9 @@ export const Login: React.FunctionComponent<LoginProps> = props => {
                     >
                       Log in
                     </Button>
-                  </span>
+                  </Text>
                 ) : (
-                  <span>
+                  <Text css={{ fontSize: theme.sizes[0] }}>
                     Don't have an account? <br />
                     <Button
                       size="sm"
@@ -181,86 +159,84 @@ export const Login: React.FunctionComponent<LoginProps> = props => {
                     >
                       Register here.
                     </Button>
-                  </span>
+                  </Text>
                 )}
-              </Text>
-            </Text>
-          </animated.div>
-
-          <AnimatedLayer
-            style={animation[1]}
-            css={{
-              flex: "1 1 40%",
-              marginTop: theme.spaces.xl,
-              [theme.breakpoints.lg]: {
-                marginTop: 0,
-                width: "40%"
-              },
-              padding: theme.spaces.lg,
-              background: "white"
-            }}
-          >
-            {error && (
-              <Alert
-                css={{ marginBottom: theme.spaces.md }}
-                intent="danger"
-                title="An error has occurred while logging in."
-                subtitle={error}
-              />
-            )}
-            <Button
-              onClick={login(loginWithGoogle)}
-              css={{
-                marginBottom: theme.spaces.md,
-                width: "100%",
-                display: "block"
-              }}
-              block
-            >
-              Sign {isRegistering ? "up" : "in"} with Google
-            </Button>
-
-            <div>
-              <form onSubmit={loginEmail}>
-                <Text muted css={{ textAlign: "center" }} variant="subtitle">
-                  Or sign {isRegistering ? "up" : "in"} using an email and
-                  password:
-                </Text>
-                <InputGroup hideLabel label="Email">
-                  <Input
-                    onChange={e => {
-                      setForm({ ...form, email: e.currentTarget.value });
-                    }}
-                    value={form.email}
-                    inputSize="md"
-                    type="email"
-                    placeholder="Email"
-                  />
-                </InputGroup>
-                <InputGroup hideLabel label="Password">
-                  <Input
-                    onChange={e => {
-                      setForm({ ...form, password: e.currentTarget.value });
-                    }}
-                    value={form.password}
-                    inputSize="md"
-                    type="password"
-                    placeholder="Password"
-                  />
-                </InputGroup>
-                <div css={{ display: "flex", justifyContent: "flex-end" }}>
-                  <Button
-                    disabled={!form.email || !form.password}
-                    css={{ marginLeft: "auto", marginTop: theme.spaces.md }}
-                    type="submit"
-                    size="md"
-                    intent="primary"
-                  >
-                    Sign {isRegistering ? "up" : "in"}
-                  </Button>
-                </div>
-              </form>
+              </div>
             </div>
+            <div
+              css={{
+                padding: theme.spaces.lg
+              }}
+            >
+              {error && (
+                <Alert
+                  css={{ marginBottom: theme.spaces.md }}
+                  intent="danger"
+                  title="An error has occurred while logging in."
+                  subtitle={error}
+                />
+              )}
+              <Button
+                onClick={login(loginWithGoogle)}
+                css={{
+                  marginBottom: theme.spaces.md,
+                  width: "100%",
+                  display: "block"
+                }}
+                block
+              >
+                Sign {isRegistering ? "up" : "in"} with Google
+              </Button>
+
+              <div>
+                <form onSubmit={loginEmail}>
+                  <Text muted css={{ textAlign: "center" }} variant="subtitle">
+                    Or sign {isRegistering ? "up" : "in"} using an email and
+                    password:
+                  </Text>
+                  <InputGroup hideLabel label="Email">
+                    <Input
+                      onChange={e => {
+                        setForm({ ...form, email: e.currentTarget.value });
+                      }}
+                      value={form.email}
+                      inputSize="md"
+                      type="email"
+                      placeholder="Email"
+                    />
+                  </InputGroup>
+                  <InputGroup hideLabel label="Password">
+                    <Input
+                      onChange={e => {
+                        setForm({ ...form, password: e.currentTarget.value });
+                      }}
+                      value={form.password}
+                      inputSize="md"
+                      type="password"
+                      placeholder="Password"
+                    />
+                  </InputGroup>
+                  <div css={{ display: "flex", justifyContent: "flex-end" }}>
+                    <Button
+                      disabled={!form.email || !form.password}
+                      block
+                      css={{
+                        textAlign: "center",
+                        width: "100%",
+                        display: "block",
+                        marginTop: theme.spaces.md
+                      }}
+                      type="submit"
+                      size="md"
+                      intent="primary"
+                    >
+                      Sign {isRegistering ? "up" : "in"}
+                    </Button>
+                  </div>
+                </form>
+              </div>
+            </div>
+
             <LayerLoading loading={loading} />
           </AnimatedLayer>
         </div>
