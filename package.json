@@ -2,6 +2,7 @@
   "name": "subtitles",
   "version": "0.1.0",
   "author": "Ben McMahen <ben.mcmahen@gmail.com>",
+  "license": "BSD-3-Clause",
   "resolutions": {
     "sancho/react": "^16.8.4",
     "sancho/react-dom": "^16.8.4"
