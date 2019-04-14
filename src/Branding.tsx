@@ -2,14 +2,15 @@
 import { jsx } from "@emotion/core";
 import * as React from "react";
 import {
-  theme,
+  useTheme,
   Navbar,
   Toolbar,
   Text,
   Button,
   Link as Anchor,
   Container,
-  Divider
+  Divider,
+  IconArrowRight
 } from "sancho";
 import { Link } from "react-router-dom";
 import { Browser } from "./Browser";
@@ -20,6 +21,7 @@ export interface BrandingProps {}
 
 export const Branding: React.FunctionComponent<BrandingProps> = props => {
   const user = useSession();
+  const theme = useTheme();
 
   return (
     <React.Fragment>
@@ -71,7 +73,7 @@ export const Branding: React.FunctionComponent<BrandingProps> = props => {
               component={Link}
               to="/new"
               intent="primary"
-              iconAfter="arrow-right"
+              iconAfter={<IconArrowRight />}
             >
               Start a new project
             </Button>
@@ -92,7 +94,7 @@ export const Branding: React.FunctionComponent<BrandingProps> = props => {
               // minWidth: "300px",
               width: "100%",
               minHeight: "150px",
-              [theme.breakpoints.md]: {
+              [theme.mediaQueries.md]: {
                 minHeight: "300px"
               },
               backgroundImage: `url(${require("./backgrounds/thumbnail.jpg")})`,
@@ -114,7 +116,7 @@ export const Branding: React.FunctionComponent<BrandingProps> = props => {
         <svg
           css={{
             display: "none",
-            [theme.breakpoints.md]: {
+            [theme.mediaQueries.md]: {
               display: "block"
             },
             position: "absolute",
@@ -167,7 +169,7 @@ export const Branding: React.FunctionComponent<BrandingProps> = props => {
           <div
             css={{
               marginTop: theme.spaces.lg,
-              [theme.breakpoints.md]: {
+              [theme.mediaQueries.md]: {
                 marginTop: theme.spaces.xl
               },
               textAlign: "center"
@@ -181,7 +183,7 @@ export const Branding: React.FunctionComponent<BrandingProps> = props => {
               css={{
                 marginBottom: theme.spaces.sm,
                 marginTop: theme.spaces.md,
-                [theme.breakpoints.md]: {
+                [theme.mediaQueries.md]: {
                   marginBottom: theme.spaces.xl,
                   marginTop: theme.spaces.md
                 }
@@ -190,7 +192,7 @@ export const Branding: React.FunctionComponent<BrandingProps> = props => {
               component={Link}
               to="/new"
               intent="primary"
-              iconAfter="arrow-right"
+              iconAfter={<IconArrowRight />}
             >
               Get started for free
             </Button>
@@ -204,7 +206,7 @@ export const Branding: React.FunctionComponent<BrandingProps> = props => {
           marginTop: theme.spaces.lg,
           position: "relative",
           paddingBottom: `${theme.spaces.xl}`,
-          [theme.breakpoints.md]: {
+          [theme.mediaQueries.md]: {
             marginTop: "100px"
           }
         }}
@@ -212,7 +214,7 @@ export const Branding: React.FunctionComponent<BrandingProps> = props => {
         <svg
           css={{
             display: "none",
-            [theme.breakpoints.md]: {
+            [theme.mediaQueries.md]: {
               display: "block"
             },
             position: "absolute",
@@ -234,7 +236,7 @@ export const Branding: React.FunctionComponent<BrandingProps> = props => {
         <Container
           css={{
             paddingTop: theme.spaces.xl,
-            [theme.breakpoints.md]: {
+            [theme.mediaQueries.md]: {
               paddingTop: 0
             },
             textAlign: "center"
@@ -246,18 +248,18 @@ export const Branding: React.FunctionComponent<BrandingProps> = props => {
           />
           <br />
           <br />
-          <Text css={{ fontSize: theme.sizes[0] }}>
+          <Text css={{ fontSize: theme.fontSizes[0] }}>
             Made with ☕ by{" "}
             <Anchor href="http://benmcmahen.com">Ben McMahen</Anchor>
           </Text>
           <br />
-          <Text css={{ fontSize: theme.sizes[0] }}>
+          <Text css={{ fontSize: theme.fontSizes[0] }}>
             View the{" "}
             <Anchor href="https://github.com/bmcmahen/captioner">source</Anchor>{" "}
             on Github
           </Text>
           <br />
-          <Text css={{ fontSize: theme.sizes[0] }}>
+          <Text css={{ fontSize: theme.fontSizes[0] }}>
             <div>
               Icons made by{" "}
               <Anchor href="https://www.freepik.com/" title="Freepik">
@@ -292,6 +294,7 @@ const Column = ({
   title: string;
   content: string;
 }) => {
+  const theme = useTheme();
   return (
     <div
       css={{
@@ -299,7 +302,7 @@ const Column = ({
         margin: "0 auto",
         textAlign: "center",
         marginBottom: theme.spaces.lg,
-        [theme.breakpoints.lg]: {
+        [theme.mediaQueries.lg]: {
           margin: theme.spaces.lg,
           marginTop: theme.spaces.xl,
           marginBottom: theme.spaces.xl,
@@ -343,66 +346,69 @@ export const AnonNav = ({
   showDashboard?: boolean;
   user?: firebase.User;
   showLogin?: boolean;
-}) => (
-  <Navbar
-    css={{
-      boxShadow: "none",
-      position: "absolute",
-      color: theme.colors.palette.blue.dark,
-      background: "transparent"
-    }}
-  >
-    <Toolbar>
-      <Link css={{ textDecoration: "none" }} to="/">
-        <Text
-          gutter={false}
-          css={{ fontWeight: 400, color: theme.colors.palette.blue.base }}
-          variant="h5"
-        >
-          Captioner.app
-        </Text>
-      </Link>
-      <div css={{ flex: 1 }} />
-      {user ? (
-        <React.Fragment>
-          {showDashboard && (
-            <Button
-              iconAfter="arrow-right"
-              variant="ghost"
-              size="lg"
-              intent="primary"
-              component={Link}
-              to="/me"
-            >
-              My Projects
-            </Button>
-          )}
-        </React.Fragment>
-      ) : (
-        <React.Fragment>
-          {showLogin && (
-            <>
+}) => {
+  const theme = useTheme();
+  return (
+    <Navbar
+      css={{
+        boxShadow: "none",
+        position: "absolute",
+        color: theme.colors.palette.blue.dark,
+        background: "transparent"
+      }}
+    >
+      <Toolbar>
+        <Link css={{ textDecoration: "none" }} to="/">
+          <Text
+            gutter={false}
+            css={{ color: theme.colors.palette.blue.base }}
+            variant="h5"
+          >
+            Captioner.app
+          </Text>
+        </Link>
+        <div css={{ flex: 1 }} />
+        {user ? (
+          <React.Fragment>
+            {showDashboard && (
               <Button
-                component={Link}
-                to="/login?register=true"
+                iconAfter={<IconArrowRight />}
                 variant="ghost"
-                css={{
-                  display: "none",
-                  [theme.breakpoints.md]: {
-                    display: "block"
-                  },
-                  marginRight: theme.spaces.md
-                }}
+                size="lg"
+                intent="primary"
+                component={Link}
+                to="/me"
               >
-                Register
+                My Projects
               </Button>
-              <Button intent="primary" component={Link} to="/login">
-                Login
-              </Button>
-            </>
-          )}
-        </React.Fragment>
-      )}
-    </Toolbar>
-  </Navbar>
-);
+            )}
+          </React.Fragment>
+        ) : (
+          <React.Fragment>
+            {showLogin && (
+              <>
+                <Button
+                  component={Link}
+                  to="/login?register=true"
+                  variant="ghost"
+                  css={{
+                    display: "none",
+                    [theme.mediaQueries.md]: {
+                      display: "flex"
+                    },
+                    marginRight: theme.spaces.md
+                  }}
+                >
+                  Register
+                </Button>
+                <Button intent="primary" component={Link} to="/login">
+                  Login
+                </Button>
+              </>
+            )}
+          </React.Fragment>
+        )}
+      </Toolbar>
+    </Navbar>
+  );
+};

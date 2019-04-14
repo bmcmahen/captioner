@@ -3,7 +3,7 @@ import { jsx } from "@emotion/core";
 import * as React from "react";
 import ReactPlayer from "react-player";
 import { Dropzone } from "./Dropzone";
-import { Embed, theme, Navbar, Toolbar } from "sancho";
+import { Embed, Toolbar, DarkMode, Theme } from "sancho";
 import debug from "debug";
 
 const log = debug("app:Video");
@@ -38,42 +38,50 @@ export const Video: React.FunctionComponent<VideoProps> = ({
   }, []);
 
   const toolbar = (
-    <Toolbar
-      compressed
-      css={{
-        display: "flex",
-        flex: "0 0 auto",
-        justifyContent: "space-between",
-        borderBottom: "1px solid rgba(255,255,255,0.1)"
-      }}
-    >
-      {children}
-    </Toolbar>
+    <DarkMode>
+      {(theme: Theme) => (
+        <Toolbar
+          compressed
+          css={{
+            display: "flex",
+            flex: "0 0 auto",
+            paddingLeft: theme.spaces.sm + " !important",
+            paddingRight: theme.spaces.md + " !important",
+            justifyContent: "space-between",
+            borderBottom: "1px solid",
+            borderBottomColor: theme.colors.border.default
+          }}
+        >
+          {children}
+        </Toolbar>
+      )}
+    </DarkMode>
   );
 
   if (!url) {
     return (
-      <div
-        css={{
-          width: "100%",
-          height: "100%",
-
-          display: "flex",
-          flexDirection: "column"
-        }}
-      >
-        {toolbar}
+      <DarkMode>
         <div
           css={{
-            flex: "1",
+            width: "100%",
+            height: "100%",
             display: "flex",
-            alignItems: "center",
-            justifyContent: "center"
+            flexDirection: "column"
           }}
         >
-          <Dropzone onRequestAddURL={setVideoURL} />
+          {toolbar}
+          <div
+            css={{
+              flex: "1",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center"
+            }}
+          >
+            <Dropzone onRequestAddURL={setVideoURL} />
+          </div>
         </div>
-      </div>
+      </DarkMode>
     );
   }
 

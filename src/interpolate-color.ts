@@ -1,9 +1,12 @@
 import interpolate from "color-interpolate";
-import { theme } from "sancho";
+import { useTheme } from "sancho";
 
-const map = interpolate([
-  theme.colors.intent.primary.light,
-  theme.colors.intent.primary.base
-]);
+function useInterpolateColor() {
+  const theme = useTheme();
+  return interpolate([
+    theme.colors.intent.primary.light,
+    theme.colors.intent.primary.base
+  ]);
+}
 
-export default map;
+export default useInterpolateColor;

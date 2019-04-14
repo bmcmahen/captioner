@@ -2,9 +2,9 @@
 import { jsx } from "@emotion/core";
 import * as React from "react";
 import throttle from "lodash.throttle";
-import { theme, Tooltip, Layer } from "sancho";
-import { useTransition, animated, useSpring, config } from "react-spring";
-import map from "./interpolate-color";
+import { useTheme, Tooltip, Theme } from "sancho";
+import { useTransition, animated, useSpring } from "react-spring";
+import useInterpolateColor from "./interpolate-color";
 import formatDuration from "format-duration";
 import color from "color";
 
@@ -40,6 +40,8 @@ export const Timeline: React.FunctionComponent<TimelineProps> = ({
   const [rect, setRect] = React.useState<ClientRect | null>(null);
   const [hover, setHover] = React.useState(false);
   const [mouse, setMouse] = React.useState(0);
+  const theme = useTheme();
+  const map = useInterpolateColor();
 
   const container = React.useRef<HTMLDivElement>(null);
   const width = linearConversion([0, duration], [0, rect ? rect.width : 0]);
@@ -192,7 +194,7 @@ export const Timeline: React.FunctionComponent<TimelineProps> = ({
                     transition: "height 0.2s ease",
                     cursor: "pointer",
                     ":hover": {
-                      fill: color(getColor(wpm(item), false))
+                      fill: color(getColor(wpm(item), false, theme, map))
                         .lighten(0.2)
                         .toString()
                     }
@@ -200,7 +202,7 @@ export const Timeline: React.FunctionComponent<TimelineProps> = ({
                   key={key}
                   x={width(item.get("startTime"))}
                   y={77 - cap(height(wpm(item)))}
-                  fill={getColor(wpm(item), false)}
+                  fill={getColor(wpm(item), false, theme, map)}
                   width={
                     width(item.get("endTime")) -
                     width(item.get("startTime")) +
@@ -226,7 +228,7 @@ function linearConversion(a: [number, number], b: [number, number]) {
   };
 }
 
-function getColor(rate: number, active: boolean) {
+function getColor(rate: number, active: boolean, theme: Theme, map: any) {
   // 1 == 3.1
 
   if (rate > 3.1) {
@@ -235,15 +237,15 @@ function getColor(rate: number, active: boolean) {
 
   return map(rate / 3.1);
 
-  if (rate <= 2.3)
-    return active
-      ? theme.colors.intent.success.dark
-      : theme.colors.intent.success.base; // good
-  if (rate > 2.3 && rate < 3.1)
-    return active
-      ? theme.colors.intent.warning.dark
-      : theme.colors.intent.warning.base; // warning
-  return active
-    ? theme.colors.intent.danger.dark
-    : theme.colors.intent.danger.base; // danger
+  // if (rate <= 2.3)
+  //   return active
+  //     ? theme.colors.intent.success.dark
+  //     : theme.colors.intent.success.base; // good
+  // if (rate > 2.3 && rate < 3.1)
+  //   return active
+  //     ? theme.colors.intent.warning.dark
+  //     : theme.colors.intent.warning.base; // warning
+  // return active
+  //   ? theme.colors.intent.danger.dark
+  //   : theme.colors.intent.danger.base; // danger
 }

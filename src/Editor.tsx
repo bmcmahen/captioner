@@ -4,7 +4,6 @@ import * as React from "react";
 import { Video } from "./Video";
 import { Captions } from "./Captions";
 import {
-  theme,
   Layer,
   IconButton,
   Text,
@@ -16,7 +15,10 @@ import {
   Button,
   Input,
   Alert,
-  Link
+  Link,
+  useTheme,
+  IconArrowLeft,
+  IconMoreVertical
 } from "sancho";
 import { useDocument, useCollection } from "react-firebase-hooks/firestore";
 import firebase from "firebase/app";
@@ -39,6 +41,7 @@ export const Editor: React.FunctionComponent<EditorProps> = ({
   const [active, setActive] = React.useState<number | null>(0);
   const [renderMain, setRenderMain] = React.useState(false);
   const [editNameMode, setEditNameMode] = React.useState(false);
+  const theme = useTheme();
 
   // load the document containing meta about the project
   const { error, loading, value: meta } = useDocument(
@@ -208,8 +211,7 @@ export const Editor: React.FunctionComponent<EditorProps> = ({
                         history.push("/me");
                       }}
                       color="white"
-                      css={{ marginLeft: "-0.5rem" }}
-                      icon="arrow-left"
+                      icon={<IconArrowLeft />}
                       label="View your projects"
                       variant="ghost"
                     />
@@ -285,7 +287,7 @@ export const Editor: React.FunctionComponent<EditorProps> = ({
                 >
                   <IconButton
                     color="white"
-                    icon="more"
+                    icon={<IconMoreVertical />}
                     disabled={!meta}
                     label="More options"
                     variant="ghost"
@@ -367,6 +369,7 @@ function MainEditor({
   animation: any;
   children?: React.ReactNode;
 }) {
+  const theme = useTheme();
   return (
     <animated.div
       style={{
@@ -403,6 +406,7 @@ function TimelineContainer({
   animation: any;
   children?: React.ReactNode;
 }) {
+  const theme = useTheme();
   return (
     <animated.div
       style={{
@@ -411,7 +415,7 @@ function TimelineContainer({
       }}
       css={{
         display: "none",
-        [theme.breakpoints.md]: {
+        [theme.mediaQueries.md]: {
           display: "block"
         },
         gridArea: "timeline"
@@ -448,6 +452,7 @@ function CaptionsContainer({ children }: { children?: React.ReactNode }) {
 }
 
 function VideoContainer({ children }: { children?: React.ReactNode }) {
+  const theme = useTheme();
   return (
     <div
       css={{

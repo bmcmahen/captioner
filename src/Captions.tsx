@@ -7,14 +7,16 @@ import {
   Toolbar,
   InputGroup,
   Navbar,
-  theme,
   Button,
   Popover,
   Input,
   IconButton,
-  Icon,
   Tooltip,
-  Modal
+  Dialog,
+  useTheme,
+  IconChevronDown,
+  IconRepeat,
+  IconHelpCircle
 } from "sancho";
 import debug from "debug";
 import { captionFactory, CaptionOptions } from "./firebase";
@@ -50,6 +52,7 @@ export const Captions: React.FunctionComponent<CaptionsProps> = ({
   collectionReference,
   onRequestSeek
 }) => {
+  const theme = useTheme();
   const [focus, setFocus] = React.useState(active);
   const [showHelp, setShowHelp] = React.useState(false);
   const [activeItem, setActiveItem] = React.useState(active);
@@ -198,8 +201,7 @@ export const Captions: React.FunctionComponent<CaptionsProps> = ({
                 variant="ghost"
               >
                 {initialCaptionDuration}s
-                <Icon
-                  icon="chevron-down"
+                <IconChevronDown
                   size="sm"
                   color={theme.colors.text.muted}
                   css={{ marginLeft: theme.spaces.xs }}
@@ -212,17 +214,17 @@ export const Captions: React.FunctionComponent<CaptionsProps> = ({
                 size="md"
                 variant="ghost"
                 onClick={() => setShowHelp(true)}
-                icon="help"
+                icon={<IconHelpCircle />}
                 label="Show shortcuts"
               />
             </Tooltip>
 
-            <Modal
+            <Dialog
               title="Shortcuts"
               isOpen={showHelp}
               onRequestClose={() => setShowHelp(false)}
               css={{
-                "& .Modal__header": {
+                "& .Dialog__header": {
                   background: theme.colors.background.tint1,
                   borderTopRightRadius: theme.radii.lg,
                   borderTopLeftRadius: theme.radii.lg,
@@ -282,12 +284,12 @@ export const Captions: React.FunctionComponent<CaptionsProps> = ({
                   </div>
                 </dl>
               </Text>
-            </Modal>
+            </Dialog>
             <Tooltip content="Toggle looping">
               <IconButton
                 size="md"
                 variant="ghost"
-                icon="repeat"
+                icon={<IconRepeat />}
                 onClick={() => setLooping(isLooping ? "false" : "enabled")}
                 color={
                   isLooping
@@ -462,6 +464,7 @@ const Caption = ({
   onRequestSaveContent,
   updateToNextTimeAllotment
 }: CaptionProps) => {
+  const theme = useTheme();
   const container = React.useRef<HTMLDivElement | null>(null);
   const textarea = React.useRef<HTMLInputElement | null>(null);
   const [value, setValue] = React.useState(caption.get("content"));
@@ -588,7 +591,7 @@ const Caption = ({
           {
             width: "100px",
             position: "relative",
-            lineHeight: theme.lineHeight,
+            lineHeight: theme.lineHeights.body,
             paddingTop: `calc(${theme.spaces.sm} + 2px)`
           }
         ]}
@@ -613,9 +616,9 @@ const Caption = ({
           color: theme.colors.text.muted,
           resize: "none",
           background: "transparent",
-          lineHeight: theme.lineHeight,
+          lineHeight: theme.lineHeights.body,
           outline: "none",
-          fontSize: theme.sizes[0],
+          fontSize: theme.fontSizes[0],
           padding: `${theme.spaces.sm} 0`,
           paddingRight: theme.spaces.sm,
           marginLeft: theme.spaces.sm,

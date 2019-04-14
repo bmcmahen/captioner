@@ -2,7 +2,7 @@
 import { jsx } from "@emotion/core";
 import * as React from "react";
 import { Redirect } from "react-router";
-import { Alert, Spinner, theme } from "sancho";
+import { Alert, Spinner, useTheme } from "sancho";
 import { useCreateProject } from "./firebase";
 import debug from "debug";
 import { LoginLayout } from "./LoginLayout";
@@ -14,6 +14,7 @@ export interface NewProjectProps {}
 export const NewProject: React.FunctionComponent<NewProjectProps> = props => {
   const { error, create } = useCreateProject();
   const [id, setId] = React.useState();
+  const theme = useTheme();
 
   React.useEffect(() => {
     create()

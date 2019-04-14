@@ -3,7 +3,6 @@ import { jsx } from "@emotion/core";
 import * as React from "react";
 import { Redirect } from "react-router-dom";
 import {
-  theme,
   Layer,
   Text,
   Button,
@@ -11,7 +10,8 @@ import {
   InputGroup,
   LayerLoading,
   Alert,
-  Container
+  Container,
+  useTheme
 } from "sancho";
 import { loginWithGoogle, loginWithEmail, createUserWithEmail } from "./auth";
 import useReactRouter from "use-react-router";
@@ -24,6 +24,7 @@ const AnimatedLayer = animated(Layer) as any;
 export interface LoginProps {}
 
 export const Login: React.FunctionComponent<LoginProps> = props => {
+  const theme = useTheme();
   const { location } = useReactRouter();
   const qs = queryString.parse(location.search);
   const [isRegistering, setIsRegistering] = React.useState(
@@ -125,7 +126,7 @@ export const Login: React.FunctionComponent<LoginProps> = props => {
                 }}
               >
                 {isRegistering ? (
-                  <Text css={{ fontSize: theme.sizes[0] }}>
+                  <Text css={{ fontSize: theme.fontSizes[0] }}>
                     Already have an account? <br />
                     <Button
                       size="sm"
@@ -141,7 +142,7 @@ export const Login: React.FunctionComponent<LoginProps> = props => {
                     </Button>
                   </Text>
                 ) : (
-                  <Text css={{ fontSize: theme.sizes[0] }}>
+                  <Text css={{ fontSize: theme.fontSizes[0] }}>
                     Don't have an account? <br />
                     <Button
                       size="sm"

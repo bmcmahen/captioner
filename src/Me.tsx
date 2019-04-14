@@ -9,17 +9,18 @@ import {
   Button,
   Text,
   Navbar,
-  theme,
   Spinner,
   Alert,
   ListItem,
-  Icon,
   List,
-  toast,
+  useToast,
   Popover,
   IconButton,
   MenuList,
-  MenuItem
+  MenuItem,
+  useTheme,
+  IconFileText,
+  IconMoreVertical
 } from "sancho";
 import { useCollection } from "react-firebase-hooks/firestore";
 import firebase from "firebase/app";
@@ -34,6 +35,9 @@ export interface MeProps {}
 
 export const Me: React.FunctionComponent<MeProps> = props => {
   const user = useSession();
+  const theme = useTheme();
+  const toast = useToast();
+
   const [newProjectId, setNewProjectId] = React.useState();
 
   const { error, loading, value } = useCollection(
@@ -91,7 +95,7 @@ export const Me: React.FunctionComponent<MeProps> = props => {
           borderRadius: 0,
           marginLeft: "auto",
           marginRight: "auto",
-          [theme.breakpoints.md]: {
+          [theme.mediaQueries.md]: {
             borderRadius: theme.radii.lg,
             marginTop: theme.spaces.xl
           },
@@ -143,7 +147,7 @@ export const Me: React.FunctionComponent<MeProps> = props => {
               css={{
                 display: "block",
                 margin: theme.spaces.md,
-                fontSize: theme.sizes[0]
+                fontSize: theme.fontSizes[0]
               }}
             >
               You have yet to create any projects.
@@ -162,7 +166,7 @@ export const Me: React.FunctionComponent<MeProps> = props => {
                 return (
                   <ListItem
                     key={doc.id}
-                    contentBefore={<Icon icon="document" size="lg" />}
+                    contentBefore={<IconFileText size="lg" />}
                     component={Link}
                     to={doc.id}
                     wrap={false}
@@ -185,7 +189,7 @@ export const Me: React.FunctionComponent<MeProps> = props => {
                         }
                       >
                         <IconButton
-                          icon="more"
+                          icon={<IconMoreVertical />}
                           onClick={e => {
                             e.preventDefault();
                             e.stopPropagation();

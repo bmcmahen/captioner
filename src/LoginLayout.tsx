@@ -2,13 +2,16 @@
 import { jsx, Global } from "@emotion/core";
 import * as React from "react";
 import {
-  theme,
   Popover,
   MenuList,
   MenuItem,
   Toolbar,
   Button,
-  responsiveBodyPadding
+  useResponsiveBodyPadding,
+  useTheme,
+  IconChevronDown,
+  IconUser,
+  IconArrowLeft
 } from "sancho";
 import { useSession, signOut } from "./auth";
 import Helmet from "react-helmet";
@@ -25,7 +28,9 @@ export const LoginLayout: React.FunctionComponent<LoginLayoutProps> = ({
   children,
   title
 }) => {
+  const theme = useTheme();
   const router = useRouter();
+  const responsiveBodyPadding = useResponsiveBodyPadding();
 
   const goHome = React.useCallback(
     e => {
@@ -64,7 +69,7 @@ export const LoginLayout: React.FunctionComponent<LoginLayoutProps> = ({
           variant="ghost"
           to="/"
           intent="primary"
-          iconBefore="arrow-left"
+          iconBefore={<IconArrowLeft />}
           // css={{ color: "white" }}
           size="lg"
         >
@@ -80,7 +85,7 @@ export const LoginLayout: React.FunctionComponent<LoginLayoutProps> = ({
             display: "flex",
             ...responsiveBodyPadding,
             marginTop: "0",
-            [theme.breakpoints.md]: {
+            [theme.mediaQueries.md]: {
               marginTop: "-50px",
               alignItems: "center",
               flexDirection: "column",
@@ -115,8 +120,8 @@ export function UserPopover() {
           variant="ghost"
           size="lg"
           intent="primary"
-          iconBefore={"user"}
-          iconAfter="chevron-down"
+          iconBefore={<IconUser />}
+          iconAfter={<IconChevronDown />}
         >
           {user.displayName || user!.email}
         </Button>
