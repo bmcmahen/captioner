@@ -1,5 +1,15 @@
 # Captioner.app
 
+<div align="center">
+  <a href="https://captioner.app">
+    <img
+    max-width="600px"
+    alt="Captioner screenshot showing a user adding subtitles to the Godfather movie."
+     src="https://raw.githubusercontent.com/bmcmahen/captioner/master/captioner.jpg">
+  </a>
+</div>
+<br />
+
 Captioner.app is a web app that allows you to produce SRT files for mp4, YouTube, or Vimeo videos directly in your web browser.
 
 It's built using the [Sancho-UI](https://github.com/bmcmahen/sancho) design system, Firebase, Typescript, React and Emotion.
